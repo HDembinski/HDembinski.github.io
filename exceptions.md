@@ -22,13 +22,9 @@ So exceptions seem pretty great, but Google turns off exceptions in all their bu
 
 This has a noticeable effect even in carefully written libraries that use exceptions correctly and use `noexcept` heavily (see next section). In Boost.Histogram, benchmarks run 10-15 % faster when I deactivate exceptions with `-fno-exceptions`.
 
-# Why and how you should use `noexcept`
+# Best practices when using C++ exceptions
 
-The `noexcept` specifier marks a function or method as non-throwing: under no circumstances is it throwing any exception. This is great for the optimiser, it restores the opportunities to reorder code.
-
-The compiler trusts this declaration blindly. As of this writing, there is no error or warning if code that was declared `noexcept` throws an exception anyway. If that happens, the program simply aborts. The developer must make sure to not lie to the compiler when declaring something as `noexcept`. There are legitimate reasons to declare a function as `noexcept` even if it internally uses throwing code (for example, third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
-
-# When to use assert and when throw an exception
+## assert or throw an exception?
 
 It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but no, don't do that. An `assert` is only checked when the code is compiled in debug mode, while exceptions are present even in production code. Therefore, an `assert` should never replace an exception, in particular in code that check or validates user input. Use exceptions for that.
 
@@ -36,11 +32,9 @@ Rule-of-thumb for using either `assert` or throwing an exception:
 - In private interfaces and private implementation code, where you have full control over the input, use `assert` to check the consistency of your program logic
 - In user-facing interfaces, use exceptions
 
-In other words, users should never see a failing `assert`. Anything that can go wrong due to external circumstances outside of the control of the program should trigger an exception. An `assert` should be seen as an executable part of the interface documentation: it reminds a developer that this code excepts certain inputs and cannot run correctly when these are violated.
+In other words, users should never see a failing `assert`. Anything that can go wrong due to external circumstances outside of the control of the program should trigger an exception. An `assert` should be seen as an executable part of the interface documentation: it reminds a developer that this code expects certain inputs and cannot run correctly when these are violated.
 
-Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone decides to refactor the code and forgets to throw the exception in the new user-facing layer.
-
-# How to use exceptions correctly
+Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone refactor the code and forgets to protect the implementation layer from invalid external input.
 
 ## Throwing, catching, and re-throw exceptions in different software layers is good
 
@@ -84,3 +78,9 @@ void throw_exception(std::exception const& e, boost::source_location const& l) {
   std::abort();
 }
 ```
+
+## How to use `noexcept`
+
+The `noexcept` specifier marks a function or method as non-throwing: under no circumstances is it throwing any exception. This is great for the optimiser, it restores the opportunities to reorder code.
+
+The compiler trusts this declaration blindly. You won't get a compile-time error or warning if code that was declared `noexcept` throws an exception anyway. [If that happens, the program simply aborts](https://en.cppreference.com/w/cpp/error/terminate). The developer must make sure to not lie to the compiler when declaring something as `noexcept`. However, there are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
