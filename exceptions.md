@@ -11,7 +11,7 @@ Further reading:
 # Cost of using exceptions
 
 - Run time:
-  - Exceptions have **zero run-time cost** if they do not trigger, but may reduce opportunities for optimisation (read on for details)
+  - Exceptions have **zero run-time cost** if they do not trigger, but may reduce optimisation opportunities (read on for details)
   - Exceptions that trigger have large cost (thousands of CPU cycles)
 - Compile time: small cost
 - Code size: small cost
