@@ -60,7 +60,7 @@ A better design is to catch the exception in a higher layer where the context in
 
 ## Improve inlining opportunities for code that throws
 
-Throwing an exception in an otherwise small function or method may prevent the optimiser from inlining it. The `throw` path generates additional instructions which increases the size of the function body, even if it is rarely triggered. The inliner tries to balance the overall increase in code size from inlining against possible performance benefits and may make the wrong decision due to the presence of the `throw`.
+Throwing an exception in an otherwise small function or method may prevent the optimiser from inlining it. The `throw` path generates additional instructions which increases the size of the function body, even if it is rarely triggered. The inliner tries to balance the overall increase in code size from inlining against possible performance benefits and may refuse to inline  due to the presence of the throw instructions.
 
 One can help the optimiser in these situations by wrapping the `throw` in a small function, e.g. `throw_exception(std::exception const& e)` and mark it with a compiler-specific attribute so that it is never inlined. Such a function is readily provided by [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/throw_exception.html). The surrounding code is now much leaner since it contains only an instruction to call a function pointer, and the optimiser will find more opportunities to inline it.
 
