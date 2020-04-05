@@ -6,46 +6,45 @@ Further reading:
 - https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/boost-exception.html
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
 - https://foonathan.net/2017/12/exceptions-vs-expected
+- https://en.cppreference.com/w/cpp/language/noexcept_spec
 
 # Cost of using exceptions
 
 - Run time:
   - Exceptions have **zero run-time cost** if they do not trigger, but reduce opportunities for optimisation (read on for details)
-  - Exceptions that trigger have large costs of O(1000) CPU cycles
+  - Exceptions that trigger have large cost of O(1000) CPU cycles
 - Compile time: small cost
-- Code size: small cost in code size
+- Code size: small cost
 
-Exceptions were designed to have zero runtime cost when they are not triggered, that is less than an if-branch, but cost O(1000) CPU cycles when they are triggered.
+Exceptions in C++ were designed to have zero run time cost when they do not trigger. Zero cost is even less cost than an if-else-branch. In theory, this makes C++ exceptions more performant than the C style alternative of returning an error code (but read on). C++ exceptions cost a lot of cycles when they trigger, but that's ok. Exceptions should never be used for normal control flow, where both alternatives happen regularly. Exceptions are for exceptional events only, faults that occur rarely. A good example is wrong user input and unexpected I/O errors.
 
-Because of these trade-offs, exceptions should not replace normal control flow with if-else. Exceptions are for exceptional events only, faults that occur rarely and from which the program cannot recover. A good example is wrong user input and unexpected I/O errors.
+So exceptions seem pretty great, but Google turns off exceptions in all their builds (`-fno-exceptions` in gcc and clang) -- why? Exceptions reduce opportunities for the optimiser to make the code faster. The optimiser is allowed to reorder and transform code if it can prove that this does not change the visible outcome. Effectively, code that potentially throws exceptions acts like a barrier for reordering, which is typically the first step before applying more powerful optimisations. When the exception triggers, the current stack has to look identical in the optimised program, which means that the computation of variables on the stack cannot be moved before or after the code that throws.
 
-Google turns off exceptions in all their builds (`-fno-exceptions` in gcc and clang) -- why? Exceptions reduce opportunities for the optimiser to make the code significantly faster, and Google cares about performance very much. The optimiser is allowed to reorder and transform code if it can be proven that this does not change the outcome. Effectively, code that potentially throws exceptions acts like a reorder-barrier. When the exception triggers, the stack has to be identical in the optimised program, which means that the computation of variables on the stack cannot be moved before or after the code that throws.
-
-This has a noticeable effect even in high-performance libraries that use exceptions correctly and use `noexcept` heavily (see next section). In Boost.Histogram, the benchmarks run 10-15 % faster when I deactivate exceptions with `-fno-exceptions`.
+This has a noticeable effect even in carefully written libraries that use exceptions correctly and use `noexcept` heavily (see next section). In Boost.Histogram, benchmarks run 10-15 % faster when I deactivate exceptions with `-fno-exceptions`.
 
 # Why and how you should use `noexcept`
 
-The `noexcept` keyword marks a function or method as non-throwing: under no circumstances is it throwing any exception. This is great for the optimiser as it restores the missing opportunities to reorder code.
+The `noexcept` specifier marks a function or method as non-throwing: under no circumstances is it throwing any exception. This is great for the optimiser, it restores the opportunities to reorder code.
 
-The compiler trusts this declaration blindly. As of this writing, there is no error or warning if code that was declared `noexcept` throws an exception anyway. If that happens, the program simply aborts. The developer must be careful when using `noexcept`, but it can be very useful when wrapping third-party code that throws exceptions. If all conditions can be anticipated and removed under which the third-party code throws, the wrapped code can be declared `noexcept`.
+The compiler trusts this declaration blindly. As of this writing, there is no error or warning if code that was declared `noexcept` throws an exception anyway. If that happens, the program simply aborts. The developer must make sure to not lie to the compiler when declaring something as `noexcept`. There are legitimate reasons to declare a function as `noexcept` even if it internally uses throwing code (for example, third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
 
 # When to use assert and when throw an exception
 
-It may be tempting use an `assert` instead of an exception, because the optimiser is troubled by an `assert`. No, don't do that. An `assert` is only checked when the code is compiled in debug mode. Exceptions are always present, also in production code. Therefore, `assert` should never replace exceptions, in particular in code that check or validates user input. Use exceptions for that.
-
-In other words, users should never see a failing `assert`. Anything that can go wrong due to external circumstances outside of the control of the program should trigger an exception. An `assert` is an executable part of the interface documentation: it tells a developer of the code that this code excepts certain inputs and cannot run correctly otherwise.
+It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but no, don't do that. An `assert` is only checked when the code is compiled in debug mode, while exceptions are present even in production code. Therefore, an `assert` should never replace an exception, in particular in code that check or validates user input. Use exceptions for that.
 
 Rule-of-thumb for using either `assert` or throwing an exception:
 - In private interfaces and private implementation code, where you have full control over the input, use `assert` to check the consistency of your program logic
 - In user-facing interfaces, use exceptions
 
-Example: Let us say some code requires some external number to be greater than 10. The user-facing layer should then check whether the number is greater than 10 and throw an exception otherwise. The deeper implementation layers should `assert` on the same condition. Under normal circumstances the `assert` will never be violated, but it is there in case you refactor the code and forget to throw the exception in the new user-facing layer.
+In other words, users should never see a failing `assert`. Anything that can go wrong due to external circumstances outside of the control of the program should trigger an exception. An `assert` should be seen as an executable part of the interface documentation: it reminds a developer that this code excepts certain inputs and cannot run correctly when these are violated.
+
+Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone decides to refactor the code and forgets to throw the exception in the new user-facing layer.
 
 # How to use exceptions correctly
 
-## Throw, catch, and re-throw exceptions in different software layers
+## Throwing, catching, and re-throw exceptions in different software layers is good
 
-Good modular software is programmed in layers. Exceptions often occur in the the lowest implementation layer. Usually the lowest layer cannot fully report the cause and context of the exception, because the information is not available in that layer.
+Good modular software is programmed in layers. Exceptions often occur in the lowest implementation layer. Sometimes the lowest layer cannot fully report the cause and context of the exception, because the information is not available in that layer.
 
 Here is an example from the documentation of Boost.Exception:
 ```
@@ -63,21 +62,21 @@ If the file cannot be read, `read_file` throws an exception. Users probably want
 
 Changing `read_file` so that it accepts the filename is breaking modularisation. The author of `read_file` cannot and should not need to know in which context this function is used.
 
-A better design is to catch the exception in the layer where the context information like the filename is available, and then add that information to the exception and re-throw it. Implementation-wise, there are some options on how to achieve this. The recommended way is to use [Boost.Exception, as described here](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/motivation.html).
+A better design is to catch the exception in a higher layer where the context information like the filename is available, and then add that information to the exception and re-throw it. [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/motivation.html) offers `boost::exception` which derives from `std::exception` and allows one to add arbitrary information to an exception in flight.
 
-## Keep the actual throwing code out of the hot code path
+## Keep throwing code out of the hot code path
 
-Throwing an exception in an otherwise small function may prevent the optimiser from inlining this function, because of the additional code generated by the throwing path. However, inlining the throwing code makes no sense, since the throw should never trigger on the hot path anyway.
+Throwing an exception in an otherwise small function may prevent the optimiser from inlining this function. There is additional code generated by the throwing path, even if it is rarely triggered, which is normally part of the function body. However, inlining the code for the throwing path makes no sense, since the throw happens exceptionally rarely.
 
-One can help the optimiser in these situations by wrapping the throw in a small function, e.g. `throw_exception(std::exception const& e)` and mark it with a suitable compiler-specific attribute so that it is never inlined. Such a function is provided by [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/throw_exception.html).
+To help the optimiser in these situations one can wrap the throw in a small function, e.g. `throw_exception(std::exception const& e)` and mark it with a suitable compiler-specific attribute so that it is never inlined. Such a function is readily provided by [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/throw_exception.html).
 
 ## Support compilation with exceptions disabled
 
-If your code throws exceptions at all, it will not compile when exceptions are turned off (the flag `-fno-exceptions` turns off exceptions completely in gcc and clang). As a library developer, you also want your code to compile when exceptions are turned off, since this makes your library useful for more people. At the very least, it helps you to see how much extra performance you loose by using exceptions and whether you need to do something about it (the difference can be reduced by keeping exceptions out of hot code paths).
+If your code throws exceptions at all, it will not compile when exceptions are turned off in the compiler (for example, the flag `-fno-exceptions` turns off exceptions completely in gcc and clang). As a library developer, you should be interested in supporting compilation without exceptions, [since this makes your library useful for more people](https://stackoverflow.com/questions/691168/how-much-footprint-does-c-exception-handling-add). At the very least, it helps you to see whether you currently loose performance by using exceptions and whether you need to do something about it (often implementations can be manually optimised to keep the cost small).
 
-Again, [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/BOOST_THROW_EXCEPTION.html) has a beautiful solution ready: if you consistently use the macro `BOOST_THROW_EXCEPTION` or the function `boost::throw_exception` instead of naked throws (which also has performance benefits as previously mentioned), your code will compile with exceptions disabled. The library will detect this and call a user-defined implementation of `void throw_exception( std::exception const& e , boost::source_location const& l)` for your program in this case, which must abort or exit the program, but can do some custom error logging before.
+Again, [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/BOOST_THROW_EXCEPTION.html) has a beautiful solution ready: if you consistently use the macro `BOOST_THROW_EXCEPTION` or the function `boost::throw_exception` instead of naked throws (which also has performance benefits as previously mentioned), your code will compile even when exceptions are disabled. The library will detect this and call a user-defined implementation of `void throw_exception( std::exception const& e , boost::source_location const& l)` for your program instead, which must terminate the program but can run error logging or clean up code before.
 
-Boost.Histogram uses Boost.Exception everywhere. This allows me to benchmark it with and without exceptions enabled (and hence I know about the 10-15 % difference in performance). The implementation of `void throw_exception( std::exception const& e, boost::source_location const& l)` in the tests and benchmarks reports about the exception and then aborts the program.
+Boost.Histogram uses Boost.Exception everywhere. This allows me to benchmark it with and without exceptions enabled (and thus I know about the 10-15 % difference in performance). The simple implementation of `void throw_exception( std::exception const& e, boost::source_location const& l)` in the tests and benchmarks reports where the exception has occured and then aborts the program.
 ```
 void throw_exception(std::exception const& e, boost::source_location const& l) {
   std::cerr << l.file_name() << ":" << l.line() << ":" << l.column() << ": exception in '"
