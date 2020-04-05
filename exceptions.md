@@ -42,7 +42,7 @@ Example: Let us say some code requires some user-defined number to be greater th
 
 ## Throwing, catching, and re-throw exceptions in different software layers is good
 
-Good modular software is programmed in layers. Exceptions often occur in the lowest implementation layer. Sometimes the lowest layer cannot fully report the context of the exception, because the information is not available in that layer.
+Good software is programmed in layers of abstraction. Exceptions often occur in the lowest implementation layer. Sometimes the lowest layer cannot fully report the context of the exception, because the information is not available in that layer.
 
 Here is an example from the documentation of Boost.Exception:
 ```
@@ -64,7 +64,7 @@ A better design is to catch the exception in a higher layer where the context in
 
 ## Improve inlining opportunities for code that throws
 
-Throwing an exception in an otherwise small function or method may prevent the optimiser from inlining it. The `throw` path generates additional instructions which increases the size of the function body, even if it is rarely triggered. The inliner tries to balance the overall increase in code size from inlining against possible performance benefits and may refuse to inline  due to the presence of the throw instructions.
+Throwing an exception in an otherwise small function or method may prevent the optimiser from inlining it. The `throw` path generates additional instructions which increases the size of the function body, even if it is rarely triggered. The inliner tries to balance the overall increase in code size from inlining against possible performance benefits and may refuse to inline due to the presence of the throw instructions.
 
 One can help the optimiser in these situations by wrapping the `throw` in a small function, e.g. `throw_exception(std::exception const& e)` and mark it with a compiler-specific attribute so that it is never inlined. Such a function is readily provided by [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/throw_exception.html). The surrounding code is now much leaner since it contains only an instruction to call a function pointer, and the optimiser will find more opportunities to inline it.
 
@@ -72,10 +72,10 @@ One can help the optimiser in these situations by wrapping the `throw` in a smal
 
 If your code throws exceptions at all, it will not compile when exceptions are turned off in the compiler (for example, with the flag `-fno-exceptions` in gcc and clang). As a library developer, you should be interested in supporting compilation without exceptions, [since this makes your library useful for more people](https://stackoverflow.com/questions/691168/how-much-footprint-does-c-exception-handling-add). At the very least, it helps you to see whether you currently loose performance by using exceptions and whether something has to be done about it (often implementations can be manually optimised to keep the cost small).
 
-Again, [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/BOOST_THROW_EXCEPTION.html) has a beautiful solution ready: if you consistently use the macro `BOOST_THROW_EXCEPTION` or the function `boost::throw_exception` instead of naked throws (which also has performance benefits as previously mentioned), your code will compile even when exceptions are disabled. The library will detect this and call a user-defined implementation of `void throw_exception( std::exception const& e , boost::source_location const& l)` for your program instead, which must terminate the program but can run error logging or clean up code before. If the code also catches and rethrows exceptions, the keywords `try` and `catch` need to be conditionally hidden, for example, like this
+Again, [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/BOOST_THROW_EXCEPTION.html) has a solution ready: if you consistently use the macro `BOOST_THROW_EXCEPTION` or the function `boost::throw_exception` instead of a naked `throw` (which also has the performance benefits previously mentioned), your code will compile even when exceptions are disabled. The library will detect this and call a user-defined implementation of `void throw_exception( std::exception const& e , boost::source_location const& l)` instead, which must terminate the program but can run error logging or clean up code before. If the code also catches and rethrows exceptions, the keywords `try` and `catch` need to be conditionally hidden, for example, like this
 ```
 #ifdef BOOST_NO_EXCEPTIONS
-  potentially_throwing(....);
+potentially_throwing(....);
 #else
 try {
   potentially_throwing(....);
@@ -96,8 +96,8 @@ void throw_exception(std::exception const& e, boost::source_location const& l) {
 
 ## How to use `noexcept`
 
-The `noexcept` specifier marks a function or method as non-throwing: under no circumstances is it throwing any exception. This is great for the optimiser, it restores the opportunities to reorder code.
+The `noexcept` specifier marks a function or method as not throwing any exception ever. This is great for the optimiser, it restores the opportunities to reorder code.
 
-The compiler trusts this declaration blindly. You won't get a compile-time error or warning if code that was declared `noexcept` throws an exception anyway. [If that happens, the program simply aborts](https://en.cppreference.com/w/cpp/error/terminate). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
+The compiler trusts this declaration blindly. You won't get a compile-time error or compile-time warning if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply aborts](https://en.cppreference.com/w/cpp/error/terminate). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
 
-However, there are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
+There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
