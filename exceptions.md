@@ -1,18 +1,21 @@
 # On C++ exceptions
 
-Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to improve error reporting in C++](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries.
+Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf) [improve error reporting in C++](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries.
 
 Further reading:
 - https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/boost-exception.html
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
 - https://foonathan.net/2017/12/exceptions-vs-expected
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
+- http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf
+
+I thank users on the cpplang boost channel for feedback and additional links.
 
 # Cost of using exceptions
 
 - Run time:
   - Exceptions have **zero run-time cost** if they do not trigger, but may reduce optimisation opportunities (read on for details)
-  - Exceptions that trigger have large cost (thousands of CPU cycles)
+  - Exceptions that trigger have [a large cost (thousands of CPU cycles)](https://docs.google.com/presentation/d/1fSkpD51FKmy8VEO9P86jWN6tOEaBmzHOXo14zLRkFKE/edit#slide=id.g40eacd9a43_0_102)
 - Compile time: small cost
 - Code size: small cost
 
@@ -94,4 +97,6 @@ void throw_exception(std::exception const& e, boost::source_location const& l) {
 
 The `noexcept` specifier marks a function or method as non-throwing: under no circumstances is it throwing any exception. This is great for the optimiser, it restores the opportunities to reorder code.
 
-The compiler trusts this declaration blindly. You won't get a compile-time error or warning if code that was declared `noexcept` throws an exception anyway. [If that happens, the program simply aborts](https://en.cppreference.com/w/cpp/error/terminate). The developer must make sure to not lie to the compiler when declaring something as `noexcept`. However, there are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
+The compiler trusts this declaration blindly. You won't get a compile-time error or warning if code that was declared `noexcept` throws an exception anyway. [If that happens, the program simply aborts](https://en.cppreference.com/w/cpp/error/terminate). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
+
+However, there are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur.
