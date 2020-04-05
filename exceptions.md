@@ -4,10 +4,11 @@ Here is a collection of advice on using exceptions in high-performance libraries
 
 Further reading:
 - https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/boost-exception.html
+- http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf
+- http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
 - https://foonathan.net/2017/12/exceptions-vs-expected
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
-- http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf
 
 I thank users on the cpplang boost channel for feedback and additional links.
 
@@ -17,7 +18,7 @@ I thank users on the cpplang boost channel for feedback and additional links.
   - Exceptions have **zero run-time cost** if they do not trigger, but may reduce optimisation opportunities (read on for details)
   - Exceptions that trigger have [a large cost (thousands of CPU cycles)](https://docs.google.com/presentation/d/1fSkpD51FKmy8VEO9P86jWN6tOEaBmzHOXo14zLRkFKE/edit#slide=id.g40eacd9a43_0_102)
 - Compile time: small cost
-- Code size: small cost
+- Code size increases by [about +15 % to +40 %](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf)
 
 Exceptions in C++ were designed to have zero run time cost when they do not trigger. Zero cost is even less cost than an if-else-branch. In theory, this makes C++ exceptions more performant than the C style alternative of returning an error code (but read on). C++ exceptions cost a lot of cycles when they trigger. Therefore, exceptions should never be used for normal control flow, where both alternatives happen regularly. Exceptions are for exceptional events only, faults that occur rarely. A good example is wrong user input and unexpected I/O errors.
 
