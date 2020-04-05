@@ -34,7 +34,7 @@ Rule-of-thumb for using either `assert` or throwing an exception:
 
 In other words, users should never see a failing `assert`. Anything that can go wrong due to external circumstances outside of the control of the program should trigger an exception. An `assert` should be seen as an executable part of the interface documentation: it reminds a developer that this code expects certain inputs and cannot run correctly when these are violated.
 
-Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone refactor the code and forgets to protect the implementation layer from invalid external input.
+Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone refactors the code and forgets to protect the implementation layer from invalid external input.
 
 ## Throwing, catching, and re-throw exceptions in different software layers is good
 
