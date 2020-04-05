@@ -71,13 +71,13 @@ If your code throws exceptions at all, it will not compile when exceptions are t
 Again, [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/BOOST_THROW_EXCEPTION.html) has a beautiful solution ready: if you consistently use the macro `BOOST_THROW_EXCEPTION` or the function `boost::throw_exception` instead of naked throws (which also has performance benefits as previously mentioned), your code will compile even when exceptions are disabled. The library will detect this and call a user-defined implementation of `void throw_exception( std::exception const& e , boost::source_location const& l)` for your program instead, which must terminate the program but can run error logging or clean up code before. If the code also catches and rethrows exceptions, the keywords `try` and `catch` need to be conditionally hidden, for example, like this
 ```
 #ifdef BOOST_NO_EXCEPTIONS
+  potentially_throwing(....);
+#else
 try {
   potentially_throwing(....);
 } catch(....) {
   ....
 }
-#else
-  potentially_throwing(....);
 #endif
 ```
 
