@@ -26,7 +26,7 @@ This has a noticeable effect even in carefully written libraries that use except
 
 ## assert or throw an exception?
 
-It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but no, don't do that. An `assert` is only checked when the code is compiled in debug mode, while exceptions are present even in production code. Therefore, an `assert` should never replace an exception, in particular in code that check or validates user input. Use exceptions for that.
+It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but no, don't do that. An `assert` is only checked when the code is compiled in debug mode, while exceptions are present even in production code. Therefore, an `assert` should never replace an exception, in particular in code that checks or validates user input.
 
 Rule-of-thumb for using either `assert` or throwing an exception:
 - In private interfaces and private implementation code, where you have full control over the input, use `assert` to check the consistency of your program logic
