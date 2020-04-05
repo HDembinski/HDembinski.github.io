@@ -1,15 +1,16 @@
 # On C++ exceptions
 
-Here is a collection of expert advice on using exceptions in high-performance libraries. There has been a lot of discussion in Boost about exceptions lately, since some people do not like the trade-offs offered by C++ exceptions, which triggered the development of Boost.Outcome and similar libraries. Boost.Outcome is not necessarily better than standard C++ exceptions, it depends on your use-case.
+Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to improve error reporting in C++](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries.
 
 Further reading:
 - https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/boost-exception.html
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
+- https://foonathan.net/2017/12/exceptions-vs-expected
 
 # Cost of using exceptions
 
 - Run time:
-  - Exceptions have **zero run-time cost** if they do not trigger, but reduce opportunities for compiler optimisation
+  - Exceptions have **zero run-time cost** if they do not trigger, but reduce opportunities for optimisation (read on for details)
   - Exceptions that trigger have large costs of O(1000) CPU cycles
 - Compile time: small cost
 - Code size: small cost in code size
