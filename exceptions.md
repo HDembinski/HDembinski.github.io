@@ -15,7 +15,7 @@ I thank users on the cpplang boost channel for feedback and additional links.
 # Cost of using exceptions
 
 - Run time:
-  - Exceptions have **zero run-time cost** if they do not trigger, but may reduce optimisation opportunities (read on for details)
+  - Exceptions have **zero run-time cost** if they do not trigger, but reduce optimisation opportunities (read on for details)
   - Exceptions that trigger have [a large cost (thousands of CPU cycles)](https://docs.google.com/presentation/d/1fSkpD51FKmy8VEO9P86jWN6tOEaBmzHOXo14zLRkFKE/edit#slide=id.g40eacd9a43_0_102)
 - Compile time: small cost
 - Code size increases by [about +15 % to +40 %](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf)
