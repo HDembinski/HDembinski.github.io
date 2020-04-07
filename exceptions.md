@@ -30,7 +30,7 @@ This has a noticeable effect even in carefully written libraries that use except
 
 ## assert or throw an exception?
 
-It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but no, don't do that. An `assert` is only checked when the code is compiled in debug mode, while exceptions are present even in production code. Therefore, an `assert` should never replace an exception, in particular in code that checks or validates user input.
+It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but no, don't do that. An `assert` is only checked when the code is compiled in debug mode [<sup>1</sup>](#1), while exceptions are present even in production code. Therefore, an `assert` should never replace an exception, in particular in code that checks or validates user input.
 
 Rule-of-thumb for using either `assert` or throwing an exception:
 - In private interfaces and private implementation code, where you have full control over the input, use `assert` to check the consistency of your program logic
@@ -39,6 +39,8 @@ Rule-of-thumb for using either `assert` or throwing an exception:
 In other words, users should never see a failing `assert`. Anything that can go wrong due to external circumstances outside of the control of the program should trigger an exception. An `assert` is an executable part of the interface documentation: it reminds a developer that this code expects certain inputs and cannot run correctly when these are violated.
 
 Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone refactors the code and forgets to protect the implementation layer from invalid external input.
+
+<a class="anchor" id="1">Note 1: The `assert` macro from `<cassert>` expands to nothing [when `-DNDEBUG` is set](https://en.cppreference.com/w/c/error/assert), which is usually set in a release build (for example, this is the `cmake` default).</a>
 
 ## Throwing, catching, and re-throw exceptions in different software layers is good
 
