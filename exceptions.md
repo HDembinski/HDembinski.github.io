@@ -4,6 +4,7 @@ Here is a collection of advice on using exceptions in high-performance libraries
 
 Further reading:
 - [Scott Meyers, Effective Modern C++, O'Reilly](http://shop.oreilly.com/product/0636920033707.do)
+- https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
 - https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/boost-exception.html
 - http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf
 - http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf
@@ -11,6 +12,7 @@ Further reading:
 - https://stackoverflow.com/questions/26079903/noexcept-stack-unwinding-and-performance
 - https://foonathan.net/2017/12/exceptions-vs-expected
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
+- https://www.boost.org/community/exception_safety.html
 
 I thank users on the cpplang boost channel for feedback and additional links.
 
@@ -43,6 +45,18 @@ In other words, users should never see a failing `assert`. Anything that can go 
 Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone refactors the code and forgets to protect the implementation layer from invalid external input.
 
 <a class="anchor" id="1">Note 1: The `assert` macro from `<cassert>` expands to nothing [when `-DNDEBUG` is set](https://en.cppreference.com/w/c/error/assert), which is usually set in a release build (for example, this is the `cmake` default).</a>
+
+## Destructors, move constructors, and move assignment should not throw
+
+If the implementation allows it at all, destructors, move constructors, and move-assignment operators should not throw exceptions. If they are not declared `noexcept` (more details on `noexcept` are given below), [the compiler will try to figure this out](https://en.cppreference.com/w/cpp/language/noexcept).
+
+Throwing destructors are dangerous, because destructors are called during the stack-unwinding when another exception was thrown. If the exception is allowed to leave the destructor in this situation, the program will terminate immediately[<sup>2</sup>](#2).
+
+Containers like `std::vector` need their elements to have non-throwing move constructors and move-assignment to make efficient use of them. Containers typically want to guarantee that they are in a valid state at all times. For example, `std::vector::push_back` grants the *strong exception guarantee*: if an exception is thrown while the method runs, the vector is guaranteed to remain in its original state. This guarantee cannot be given if moves can throw. For moves to be efficient, the original value in the container has to be destroyed before the new value is moved into its memory block. If the move operation throws, the original value cannot be restored. Since correctness is more important than performance, `std::vector::push_back` [tries to copy values instead of moving them when moves can throw](https://en.cppreference.com/w/cpp/container/vector/push_back).
+
+The existance of throwing moves caused considerable head ache for developers of type-safe union types, like [`std::variant`](https://en.cppreference.com/w/cpp/utility/variant) and [`boost::variant2`](https://www.boost.org/doc/libs/1_72_0/libs/variant2/doc/html/variant2.html). While `std::variant` [gives up on the strong exception guarantee](https://en.cppreference.com/w/cpp/utility/variant/valueless_by_exception) in this case, [`boost::variant2` adheres to it](https://www.boost.org/doc/libs/1_72_0/libs/variant2/doc/html/variant2.html#design_strong_exception_safety), at the cost of being doubled in size if any type in the variant set has throwing moves.
+
+<a class="anchor" id="2">Note 2: [It is possible to detect the exception in flight](https://stackoverflow.com/questions/1187692/how-to-detect-when-an-exception-is-in-flight) and react, but that is a really unappealing solution.</a>
 
 ## Throwing, catching, and re-throw exceptions in different software layers is good
 
