@@ -32,7 +32,7 @@ Exceptions in C++ were designed to have zero run time cost when they do not trig
 
 So exceptions seem pretty great, but Google turns off exceptions in their builds (`-fno-exceptions` in gcc and clang) -- why? [Apart from stylistic issues](https://google.github.io/styleguide/cppguide.html#Exceptions), exceptions reduce opportunities for the optimiser to make the code faster. The optimiser is allowed to transform code if it can prove that this does not change the visible outcome. A potentially throwing expression can prevent fusing instructions before and after the expression. When the exception triggers, the instructions after the exception are not executed. If this has observable side effects, the [optimiser cannot fuse the instructions to increase performance](https://godbolt.org/z/9YAdaz).
 
-All in all, this has a noticeable effect even in carefully written libraries that use exceptions. In Boost.Histogram, benchmarks run 10-15 % faster when I deactivate exceptions with `-fno-exceptions`.
+All in all, this has a noticeable effect even in carefully written libraries that use exceptions. In Boost.Histogram, benchmarks run 10-15 % faster when I deactivate exceptions with `-fno-exceptions`, even though no exceptions are thrown in these benchmarks.
 
 # Best practices when using C++ exceptions
 
