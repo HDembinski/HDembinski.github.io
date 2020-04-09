@@ -38,19 +38,19 @@ All in all, this has a noticeable effect even in carefully written libraries tha
 
 The `noexcept` specifier marks a function or method as not throwing any exception ever. This is great for the optimiser.
 
-The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>3</sup>](#3). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
+The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>1</sup>](#1). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
 
 There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. While this should be a performance gain in theory, [in reality it depend on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
 
 It is not necessary to mark every non-throwing function or method as `noexcept`, [the compiler is able to detect simple cases](https://en.cppreference.com/w/cpp/language/noexcept).
 
-<a class="anchor" id="3">Note 3: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ).</a>
+<a class="anchor" id="1">Note 1: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ).</a>
 
 ## Best practices when using C++ exceptions
 
 ### assert or throw an exception?
 
-It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but don't do that. An `assert` is usually only checked when the code is compiled in debug mode[<sup>1</sup>](#1), while exceptions work also in production code. Therefore, an `assert` cannot be used in place of an exception, in particular in code that checks or validates user input.
+It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but don't do that. An `assert` is usually only checked when the code is compiled in debug mode[<sup>2</sup>](#2), while exceptions work also in production code. Therefore, an `assert` cannot be used in place of an exception, in particular in code that checks or validates user input.
 
 Rule-of-thumb for using either `assert` or throwing an exception:
 - In private interfaces and private implementation code, where you have full control over the input, use `assert` to check the consistency of your program logic
@@ -60,19 +60,19 @@ In other words, users should never see a failing `assert`. Anything that can go 
 
 Example: Let us say some code requires some user-defined number to be greater than 10. The user-facing layer should check whether the number is greater than 10 and otherwise throw an exception. The deeper implementation layers should `assert` on the same condition. This is not redundant, since the `assert` documents what the implementation layer expects. If the program is not altered, the `assert` will never be violated, but it is there in case someone refactors the code and forgets to protect the implementation layer from invalid external input.
 
-<a class="anchor" id="1">Note 1: To be more precise, the `assert` macro from `<cassert>` expands to nothing [when `-DNDEBUG` is set](https://en.cppreference.com/w/c/error/assert), which is usually set in a release build (for example, this is the `cmake` default).</a>
+<a class="anchor" id="2">Note 2: To be more precise, the `assert` macro from `<cassert>` expands to nothing [when `-DNDEBUG` is set](https://en.cppreference.com/w/c/error/assert), which is usually set in a release build (for example, this is the `cmake` default).</a>
 
 ### Destructors, move constructors, and move assignment should not throw
 
 If the implementation allows it at all, destructors, move constructors, and move-assignment operators should not throw exceptions. If they are not declared `noexcept` (more details on `noexcept` are given below), [the compiler will try to figure this out](https://en.cppreference.com/w/cpp/language/noexcept).
 
-[Throwing destructors are a really bad idea](https://isocpp.org/wiki/faq/exceptions#dtors-shouldnt-throw), because destructors are called during the stack-unwinding when another exception was thrown. If the exception is allowed to leave the destructor in this situation, the program will terminate immediately[<sup>2</sup>](#2).
+[Throwing destructors are a really bad idea](https://isocpp.org/wiki/faq/exceptions#dtors-shouldnt-throw), because destructors are called during the stack-unwinding when another exception was thrown. If the exception is allowed to leave the destructor in this situation, the program will terminate immediately[<sup>3</sup>](#3).
 
 Containers like `std::vector` need their elements to have non-throwing move constructors and move-assignment to make efficient use of them. Containers typically want to guarantee that they are in a valid state at all times. For example, `std::vector::push_back` grants the *strong exception guarantee*: if an exception is thrown while the method runs, the vector is guaranteed to remain in its original state. This guarantee cannot be given if moves can throw. For moves to be efficient, the original value in the container has to be destroyed before the new value is moved into its memory block. If the move operation throws, the original value cannot be restored. Since correctness is more important than performance, `std::vector::push_back` [tries to copy values instead of moving them when moves can throw](https://en.cppreference.com/w/cpp/container/vector/push_back).
 
 The existance of throwing moves caused considerable head ache for developers of type-safe union types, like [`std::variant`](https://en.cppreference.com/w/cpp/utility/variant) and [`boost::variant2`](https://www.boost.org/doc/libs/1_72_0/libs/variant2/doc/html/variant2.html). While `std::variant` [gives up on the strong exception guarantee](https://en.cppreference.com/w/cpp/utility/variant/valueless_by_exception) in this case, [`boost::variant2` adheres to it](https://www.boost.org/doc/libs/1_72_0/libs/variant2/doc/html/variant2.html#design_strong_exception_safety) at the cost of doubling the size of the variant if any type in the variant set has throwing moves.
 
-<a class="anchor" id="2">Note 2: [It is possible to detect the exception in flight](https://stackoverflow.com/questions/1187692/how-to-detect-when-an-exception-is-in-flight) and react, but that is a really unappealing solution.</a>
+<a class="anchor" id="3">Note 3: [It is possible to detect the exception in flight](https://stackoverflow.com/questions/1187692/how-to-detect-when-an-exception-is-in-flight) and react, but that is a really unappealing solution.</a>
 
 ### Throwing, catching, and re-throw exceptions in different software layers is good
 
