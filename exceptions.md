@@ -120,7 +120,7 @@ void throw_exception(std::exception const& e, boost::source_location const& l) {
 
 The `noexcept` specifier marks a function or method as not throwing any exception ever. This is great for the optimiser, it restores the opportunities to reorder code, for example.
 
-The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply aborts](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>3</sup>](#3). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
+The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>3</sup>](#3). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
 
 There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. While this should be a performance gain in theory, [in reality it depend on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
 
