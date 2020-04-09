@@ -3,8 +3,10 @@
 Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf) [improve error reporting in C++](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries. Here we deal with classic C++ exceptions.
 
 Further reading:
+- https://www.boost.org/community/error_handling.html
 - [Scott Meyers, Effective Modern C++, O'Reilly](http://shop.oreilly.com/product/0636920033707.do)
 - https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+- https://www.boost.org/community/exception_safety.html
 - https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/boost-exception.html
 - http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf
 - http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf
@@ -12,7 +14,6 @@ Further reading:
 - https://stackoverflow.com/questions/26079903/noexcept-stack-unwinding-and-performance
 - https://foonathan.net/2017/12/exceptions-vs-expected
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
-- https://www.boost.org/community/exception_safety.html
 
 I thank users on the cpplang boost channel for feedback and additional links.
 
