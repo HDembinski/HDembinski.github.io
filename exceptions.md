@@ -16,11 +16,11 @@ Further reading:
 
 I thank users on the cpplang boost channel for feedback and additional links.
 
-# Why use exceptions and not an alternative?
+## Why use exceptions and not an alternative?
 
 Exceptions are the official language feature of C++ for reporting errors. There are two cases in C++ where other error reporting systems based on return values do not work: in constructors (which do not return) and in operators (which must use the return value for something else). There are workarounds for these cases, but they lead to less idiomatic C++. Of course, [there are also reasons](https://google.github.io/styleguide/cppguide.html#Exceptions) [to avoid exceptions](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/motivation/exceptions.html). [Herb Sutter gives a comprehensive overview of the various pros and cons of exceptions and their alternatives](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf).
 
-# Cost of using exceptions
+## Cost of using exceptions
 
 - Run time:
   - Exceptions have **zero run-time cost** if they do not trigger, but reduce optimisation opportunities (read on for details)
@@ -34,9 +34,21 @@ So exceptions seem pretty great, but Google turns off exceptions in their builds
 
 All in all, this has a noticeable effect even in carefully written libraries that use exceptions. In Boost.Histogram, benchmarks run 10-15 % faster when I deactivate exceptions with `-fno-exceptions`, even though no exceptions are thrown in these benchmarks.
 
-# Best practices when using C++ exceptions
+## How to use `noexcept`
 
-## assert or throw an exception?
+The `noexcept` specifier marks a function or method as not throwing any exception ever. This is great for the optimiser.
+
+The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>3</sup>](#3). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
+
+There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. While this should be a performance gain in theory, [in reality it depend on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
+
+It is not necessary to mark every non-throwing function or method as `noexcept`, [the compiler is able to detect simple cases](https://en.cppreference.com/w/cpp/language/noexcept).
+
+<a class="anchor" id="3">Note 3: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ).</a>
+
+## Best practices when using C++ exceptions
+
+### assert or throw an exception?
 
 It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but don't do that. An `assert` is usually only checked when the code is compiled in debug mode[<sup>1</sup>](#1), while exceptions work also in production code. Therefore, an `assert` cannot be used in place of an exception, in particular in code that checks or validates user input.
 
@@ -50,7 +62,7 @@ Example: Let us say some code requires some user-defined number to be greater th
 
 <a class="anchor" id="1">Note 1: To be more precise, the `assert` macro from `<cassert>` expands to nothing [when `-DNDEBUG` is set](https://en.cppreference.com/w/c/error/assert), which is usually set in a release build (for example, this is the `cmake` default).</a>
 
-## Destructors, move constructors, and move assignment should not throw
+### Destructors, move constructors, and move assignment should not throw
 
 If the implementation allows it at all, destructors, move constructors, and move-assignment operators should not throw exceptions. If they are not declared `noexcept` (more details on `noexcept` are given below), [the compiler will try to figure this out](https://en.cppreference.com/w/cpp/language/noexcept).
 
@@ -62,7 +74,7 @@ The existance of throwing moves caused considerable head ache for developers of 
 
 <a class="anchor" id="2">Note 2: [It is possible to detect the exception in flight](https://stackoverflow.com/questions/1187692/how-to-detect-when-an-exception-is-in-flight) and react, but that is a really unappealing solution.</a>
 
-## Throwing, catching, and re-throw exceptions in different software layers is good
+### Throwing, catching, and re-throw exceptions in different software layers is good
 
 Good software is programmed in layers of abstraction. Exceptions often occur in the lowest implementation layer. Sometimes the lowest layer cannot fully report the context of the exception, because the information is not available in that layer.
 
@@ -84,13 +96,13 @@ Changing `read_file` so that it accepts the filename is breaking modularisation.
 
 A better design is to catch the exception in a higher layer where the context information, like the filename, is available, and then add that information to the exception and re-throw it. [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/motivation.html) offers `boost::exception` which derives from `std::exception` and allows one to add arbitrary information to an exception in flight.
 
-## Improve inlining opportunities for code that throws
+### Improve inlining opportunities for code that throws
 
 Throwing an exception in an otherwise small function or method may prevent the optimiser from inlining it. The `throw` path generates additional instructions which increases the size of the function body, even if it is rarely triggered. The inliner tries to balance the overall increase in code size from inlining against possible performance benefits and may refuse to inline due to the presence of the throw instructions.
 
 One can help the optimiser in these situations by wrapping the `throw` in a small function, e.g. `throw_exception(std::exception const& e)` and mark it with a compiler-specific attribute so that it is never inlined. Such a function is readily provided by [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/throw_exception.html). The surrounding code is now much leaner since it contains only an instruction to call a function pointer, and the optimiser will find more opportunities to inline it.
 
-## Support compilation with exceptions disabled
+### Support compilation with exceptions disabled
 
 If your code throws exceptions at all, it will not compile when exceptions are turned off in the compiler (for example, with the flag `-fno-exceptions` in gcc and clang). As a library developer, you should be interested in supporting compilation without exceptions, [since this makes your library useful for more people](https://stackoverflow.com/questions/691168/how-much-footprint-does-c-exception-handling-add). At the very least, it helps you to see whether you currently loose performance by using exceptions and whether something has to be done about it (often implementations can be manually optimised to keep the cost small).
 
@@ -115,13 +127,3 @@ void throw_exception(std::exception const& e, boost::source_location const& l) {
   std::abort();
 }
 ```
-
-## How to use `noexcept`
-
-The `noexcept` specifier marks a function or method as not throwing any exception ever. This is great for the optimiser, it restores the opportunities to reorder code, for example.
-
-The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>3</sup>](#3). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
-
-There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. While this should be a performance gain in theory, [in reality it depend on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
-
-<a class="anchor" id="3">Note 3: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ).</a>
