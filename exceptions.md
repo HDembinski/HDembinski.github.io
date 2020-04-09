@@ -1,6 +1,6 @@
 # On C++ exceptions
 
-Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf) [improve error reporting in C++](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries. Here we deal with classic C++ exceptions.
+Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf) [improve error reporting in C++](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries. Here we deal with classic C++ exceptions.
 
 Further reading:
 - https://www.boost.org/community/error_handling.html
@@ -12,10 +12,13 @@ Further reading:
 - http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
 - https://stackoverflow.com/questions/26079903/noexcept-stack-unwinding-and-performance
-- https://foonathan.net/2017/12/exceptions-vs-expected
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
 
 I thank users on the cpplang boost channel for feedback and additional links.
+
+# Why use exceptions and not an alternative?
+
+Exceptions are the official language feature of C++ for reporting errors. There are two cases in C++ where other error reporting systems based on return values do not work: in constructors (which do not return) and in operators (which must use the return value for something else). There are workarounds for these cases, but they lead to less idiomatic C++. Of course, [there are also reasons](https://google.github.io/styleguide/cppguide.html#Exceptions) [to avoid exceptions](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/motivation/exceptions.html). [Herb Sutter gives a comprehensive overview of the various pros and cons of exceptions and their alternatives](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf).
 
 # Cost of using exceptions
 
