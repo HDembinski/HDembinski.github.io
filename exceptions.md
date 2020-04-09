@@ -124,4 +124,4 @@ The compiler trusts this declaration. You won't get a compile-time error if code
 
 There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. While this should be a performance gain in theory, [in reality it depend on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
 
-<a class="anchor" id="3">Note 3: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ))</a>
+<a class="anchor" id="3">Note 3: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ).</a>
