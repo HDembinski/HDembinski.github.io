@@ -119,7 +119,7 @@ try {
 }
 #endif
 ```
-The [gcc implementation of the C++ stdlib](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_exceptions.html) uses a similar approach to work even you turn off exceptions.
+The [gcc implementation of the C++ stdlib](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_exceptions.html) uses a similar approach when you turn off exceptions.
 
 Boost.Histogram uses Boost.Exception everywhere. This allows me to benchmark it with and without exceptions enabled (and thus I know about the 10-15 % difference in performance). The simple implementation of `void throw_exception( std::exception const& e, boost::source_location const& l)` in the tests and benchmarks reports where the exception has occured and then aborts the program.
 ```
