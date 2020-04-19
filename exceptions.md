@@ -13,6 +13,7 @@ Further reading:
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
 - https://stackoverflow.com/questions/26079903/noexcept-stack-unwinding-and-performance
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
+-  turning off exceptions causes the stdlib to fail fast when an exception would be thrown
 
 I thank users on the cpplang boost channel for feedback and additional links. Further contributions and corrections came from Github users [degski](https://github.com/degski), [max0x7ba](https://github.com/max0x7ba), and [expnkx](https://github.com/expnkx).
 
@@ -118,6 +119,7 @@ try {
 }
 #endif
 ```
+The [gcc implementation of the C++ stdlib](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_exceptions.html) uses a similar approach to work even you turn off exceptions.
 
 Boost.Histogram uses Boost.Exception everywhere. This allows me to benchmark it with and without exceptions enabled (and thus I know about the 10-15 % difference in performance). The simple implementation of `void throw_exception( std::exception const& e, boost::source_location const& l)` in the tests and benchmarks reports where the exception has occured and then aborts the program.
 ```
