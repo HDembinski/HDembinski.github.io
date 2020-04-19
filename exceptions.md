@@ -38,13 +38,13 @@ All in all, this has a noticeable effect even in carefully written libraries tha
 
 The `noexcept` specifier marks a function or method as not throwing any exception ever. This is great for the optimiser.
 
-The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but only in obvious cases[<sup>1</sup>](#1). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
+The compiler trusts this declaration. You won't get a compile-time error if code that was declared `noexcept` throws an exception anyway. [If that happens at run-time, the program simply terminates](https://en.cppreference.com/w/cpp/error/terminate). Compilers may emit a warning about this, but at the time of this writing, they only do this in obvious cases[<sup>1</sup>](#1). The developer must make sure to not lie to the compiler when declaring something as `noexcept`.
 
-There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. While this should be a performance gain in theory, [in reality it depend on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
+There are legitimate reasons to declare a function `noexcept` which has throwing internal code (which may be third-party code). If all conditions can be anticipated and explicitly handled under which the internal code could throw, the surrounding code can be declared `noexcept` since no throw will actually occur. Similarly, a function or method that throws and catches all exceptions internally, so that none leave the function, can be declared `noexcept`. This should be a performance gain in theory, but in practice [it depends on the compiler support for `noexcept`](https://github.com/N-Dekker/noexcept_benchmark).
 
-It is not necessary to mark every non-throwing function or method as `noexcept`, [the compiler is able to detect simple cases](https://en.cppreference.com/w/cpp/language/noexcept).
+Also in theory, it should not be necessary to mark every non-throwing function or method as `noexcept`, [the compiler is supposed to detect simple cases](https://en.cppreference.com/w/cpp/language/noexcept). At the time of this writing, however, not even the most recent compiler versions (clang-10, gcc-9.3) detect the `noexcept` property [even for the most trivial functions](https://godbolt.org/z/y-7uJT).
 
-<a class="anchor" id="1">Note 1: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ).</a>
+<a class="anchor" id="1">Note 1: At the time of this writing, neither gcc or clang [warn if the throw is nested in another function](https://godbolt.org/z/F_lBdZ), even if the implementation of that function is visible to the compiler.</a>
 
 ## Best practices when using C++ exceptions
 
