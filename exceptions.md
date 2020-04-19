@@ -14,7 +14,7 @@ Further reading:
 - https://stackoverflow.com/questions/26079903/noexcept-stack-unwinding-and-performance
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
 
-I thank users on the cpplang boost channel for feedback and additional links.
+I thank users on the cpplang boost channel for feedback and additional links. Further contributions and corrections came from Github users [degski](https://github.com/degski), [max0x7ba](https://github.com/max0x7ba), and [expnkx](https://github.com/expnkx).
 
 ## Why use exceptions and not an alternative?
 
