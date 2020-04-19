@@ -13,7 +13,7 @@ Further reading:
 - https://stackoverflow.com/questions/13835817/are-exceptions-in-c-really-slow
 - https://stackoverflow.com/questions/26079903/noexcept-stack-unwinding-and-performance
 - https://en.cppreference.com/w/cpp/language/noexcept_spec
--  turning off exceptions causes the stdlib to fail fast when an exception would be thrown
+- https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_exceptions.html
 
 I thank users on the cpplang boost channel for feedback and additional links. Further contributions and corrections came from Github users [degski](https://github.com/degski), [max0x7ba](https://github.com/max0x7ba), and [expnkx](https://github.com/expnkx).
 
@@ -27,7 +27,7 @@ Exceptions are the official language feature of C++ for reporting errors. There 
   - Exceptions have **zero run-time cost** if they do not trigger, but reduce optimisation opportunities (read on for details)
   - Exceptions that trigger have [a large cost (thousands of CPU cycles)](https://docs.google.com/presentation/d/1fSkpD51FKmy8VEO9P86jWN6tOEaBmzHOXo14zLRkFKE/edit#slide=id.g40eacd9a43_0_102)
 - Compile time: small cost
-- Code size increases by [about +15 % to +40 %](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf)
+- Code size increases by [about +7 %](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_exceptions.html) [to +40 %](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf), depending on compiler and operating system
 
 Exceptions in C++ were designed to have zero run time cost when they do not trigger. Zero cost is even less cost than an if-else-branch. In theory, this makes C++ exceptions more performant than the C style alternative of returning an error code on the happy path (but read on). C++ exceptions cost a lot of cycles when they trigger. Therefore, exceptions should never be used for normal control flow, where both alternatives happen regularly. Exceptions are for exceptional events only, faults that occur rarely during the run of a program. A good example is wrong user input and unexpected I/O errors.
 
