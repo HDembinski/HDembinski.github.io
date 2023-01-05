@@ -16,19 +16,24 @@ end program
 
 
 subroutine set_rstate(void_ptr) BIND(C,name='set_rstate')
-USE, INTRINSIC :: ISO_C_BINDING
-implicit none
+    USE, INTRINSIC :: ISO_C_BINDING
+    implicit none
+
     type(c_ptr), intent(in) :: void_ptr
     common rstate
     type(c_ptr) :: rstate
+
     rstate = void_ptr
 end subroutine
 
 
 subroutine rng(val)
-USE, INTRINSIC :: ISO_C_BINDING
-    real (c_double) :: val
+    USE, INTRINSIC :: ISO_C_BINDING
+    implicit none
+
+    real (c_double), intent(out) :: val
     common rstate
     type(c_ptr) :: rstate
+
     call next(val, rstate)
 end subroutine
