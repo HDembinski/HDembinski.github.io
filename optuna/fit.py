@@ -157,8 +157,11 @@ def objective(trial):
         if test_loss[-1] < best_loss:
             best_loss = test_loss[-1]
 
-        stop = best_loss < 0.1
-        if epoch == 1 or stop or epoch % 50 == 0:
+        stop = np.is_nan(loss) or (
+            epoch >= 200 and not np.min(test_loss[-100:]) < np.min(test_loss[-200:-100])
+        )
+
+        if stop or epoch % 50 == 0:
             print(
                 f"epoch = {epoch:5} "
                 f"loss(train) = {train_loss[-1]:6.3f} "
@@ -172,7 +175,7 @@ def objective(trial):
 
 study = optuna.create_study(
     storage="sqlite:///db.sqlite3",  # Specify the storage URL here.
-    study_name="deep-set-4",
+    study_name="deep-set",
 )
 study.optimize(objective, n_trials=100)
 print(f"Best value: {study.best_value} (params: {study.best_params})")
