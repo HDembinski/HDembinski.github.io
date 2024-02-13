@@ -87,7 +87,7 @@ C-----------------------------------------------------------------------
 
 #ifdef SIBYLL_21
 555   S_RNDM = real(SIMRND())
-      IF ((S_RNDM.LE.0E0).OR.(S_RNDM.GE.1E0)) GOTO 555     
+      IF ((S_RNDM.LE.0E0).OR.(S_RNDM.GE.1E0)) GOTO 555
 #else
       S_RNDM = SIMRND()
 #endif

@@ -18,7 +18,7 @@ extern "C" {
     }
 }
 
-// pass random state created by Numpy to Fortran 
+// pass random state created by Numpy to Fortran
 void init_fortran(py::object rng) {
     py::object pybitgen = rng.attr("bit_generator");
     py::capsule cap = pybitgen.attr("capsule");

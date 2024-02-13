@@ -19,7 +19,7 @@ incdir_numpy = run_command(py,
 
 inc_np = include_directories(incdir_numpy)
 
-incdir_pybind11 = run_command(py, 
+incdir_pybind11 = run_command(py,
   [
     '-c',
     'import os; os.chdir(".."); import pybind11; print(pybind11.get_include())'
