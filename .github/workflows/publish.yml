@@ -1,0 +1,25 @@
+name: publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Set permissions to allow deployment to GitHub Pages
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: quarto-dev/quarto-actions/setup@v2
+    - uses: quarto-dev/quarto-actions/publish@v2
+      with:
+        target: gh-pages

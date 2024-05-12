@@ -10,3 +10,4 @@ py311
 .ruff_cache
 /.quarto/
 .vscode
+_site
