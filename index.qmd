@@ -1,8 +1,6 @@
 ---
 listing:
-  contents:
-    - "posts/*.ipynb"
-    - "posts/*.md"
+  contents: posts
   sort: "date desc"
   type: default
   categories: false

@@ -1,7 +1,3 @@
-Collection of various small write-ups on specific topics from the fields of:
+This is the repository of my blog. [See the rendered version of this repository here.](https://hdembinski.github.io/)
 
-- Statistics
-- Programming
-- Physics
-
-All notebooks are released under the MIT license, see the LICENSE file in the repository.
+Notebooks in this repository are released under the MIT license, see the LICENSE file in the repository.

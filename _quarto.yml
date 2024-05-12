@@ -4,6 +4,8 @@ project:
 website:
   title: Hans Dembinski's blog
   navbar:
+    left:
+      - lectures.qmd
     right:
       - about.qmd
       - icon: linkedin
