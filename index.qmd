@@ -1,12 +1,13 @@
 ---
 listing:
-  contents: posts
+  contents:
+    - "posts/*.ipynb"
+    - "posts/*.md"
   sort: "date desc"
   type: default
-  categories: true
+  categories: false
   sort-ui: false
   filter-ui: false
 page-layout: full
 title-block-banner: true
 ---
- 
