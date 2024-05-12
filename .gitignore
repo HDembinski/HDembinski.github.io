@@ -6,3 +6,5 @@ __pycache__
 *.pkl.gz
 .venv
 py311
+.benchmarks
+.ruff_cache

@@ -1,0 +1,21 @@
+---
+title: "About"
+image: nicolas-gras-hs_7p95FYZM-unsplash.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/hans-dembinski/
+    - icon: github
+      text: Github
+      href: https://github.com/HDembinski
+
+---
+
+I did a PhD in astroparticle physics at RWTH Aachen and had several postdocs positions in at KIT Karlsruhe, the University of Delaware, Max-Planck-Institute for Nuclear Physics, and TU Dortmund University. I have curious mind and a broad range of interests, professionally they circle around data analysis, statistics, software development, machine learning, and artificial intelligence.
+
+I am a member of the [Boost C++ Project](www.boost.org), to which I contributed the Histogram library. My C++ skill is in the grandmaster area, but recently I only program in Python, since it is so much more enjoyable and with [Numba](https://numba.pydata.org/) one can write numerical code in Python with performance on par with C++ in a fraction of the time.
+
+The image is from <a href="https://unsplash.com/@armgd?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Nicolas Gras</a> on <a href="https://unsplash.com/photos/a-blurry-photo-of-some-gold-glitter-hs_7p95FYZM?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>.
+  
