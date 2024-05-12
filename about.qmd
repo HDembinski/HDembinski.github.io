@@ -1,0 +1,12 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+---
+
+I have curious mind and a broad range of interests, professionally they circle around data analysis, statistics, software development, machine learning, and artificial intelligence. In this blog, I write about these topics.
+
+I have a PhD in astroparticle physics. If you want to know more about my professional career, read more about me on LinkedIn. I wrote and maintain a couple of data science libraries. Check out my Github page if you want to know more. I am a member of the [Boost C++ Project](https://www.boost.org), to which I contributed the [Histogram library](https://www.boost.org/doc/libs/1_85_0/libs/histogram/doc/html/index.html). My C++ skill is in the grandmaster area, but recently I only program in Python, since it is so much more enjoyable and with [Numba](https://numba.pydata.org/) one can write numerical code in Python with performance on par with C++ in a fraction of the time.
+
+
