@@ -1,5 +1,4 @@
 ---
-title: "blog"
 listing:
   contents: posts
   sort: "date desc"
@@ -10,5 +9,4 @@ listing:
 page-layout: full
 title-block-banner: true
 ---
-
-
+ 
