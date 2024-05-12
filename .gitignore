@@ -9,3 +9,4 @@ py311
 .benchmarks
 .ruff_cache
 /.quarto/
+.vscode
