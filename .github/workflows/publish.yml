@@ -12,14 +12,29 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Set permissions to allow deployment to GitHub Pages
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
     steps:
     - uses: actions/checkout@v4
     - uses: quarto-dev/quarto-actions/setup@v2
-    - uses: quarto-dev/quarto-actions/publish@v2
+    - run:
+        quarto render
+    - uses: actions/upload-pages-artifact@v3
       with:
-        target: gh-pages
+        path: '_site'
+
+  deploy:
+    needs: build
+    # Set permissions to allow deployment to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/configure-pages@v4
+    - uses: actions/deploy-pages@v4
