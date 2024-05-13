@@ -6,6 +6,7 @@ website:
   navbar:
     left:
       - lectures.qmd
+      - talks.qmd
     right:
       - about.qmd
       - icon: linkedin
