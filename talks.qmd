@@ -5,10 +5,10 @@ page-layout: full
 
 I highlight a few talks here which I made for the general public.
 
-## [2022 June: Faszination Astronomie online (german)](./talks/2022_06_Faszination_Astronomie.pdf)
+## [2022 June: Faszination Astronomie online (german)](https://media.githubusercontent.com/media/HDembinski/HDembinski.github.io/gh-pages/talks/2022_06_Faszination_Astronomie.pdf)
 
 A talk in German for the interested public that I gave about my scientific work: resolving the Muon Puzzle in air showers initiated by ultra-high energy cosmic rays. The talk contains animations which do not work in the PDF version. You can [watch me presenting it on Youtube](https://www.youtube.com/watch?v=STyvUC_-68w).
 
-## [2024 May: On the origin of life on Earth](./talks/2024_05_life_on_earth.pdf)
+## [2024 May: On the origin of life on Earth](https://media.githubusercontent.com/media/HDembinski/HDembinski.github.io/gh-pages/talks/2024_05_life_on_earth.pdf)
 
 I prepared this talk as part of my habilitation duties. It is about the puzzle around the origin of life on Earth: how could it evolve so quickly out of non-living matter? Many people expressed how much they liked the talk and topic, so I am sharing it here.
