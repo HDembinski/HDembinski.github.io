@@ -16,6 +16,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: quarto-dev/quarto-actions/setup@v2
     - run:
+        python auto_add_date.py posts/*.ipynb
         quarto render
     - uses: actions/upload-pages-artifact@v3
       with:

@@ -1,3 +1,7 @@
+---
+date : 2020-04-05
+---
+
 # C++ exceptions in high-performance code
 
 Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf) [improve error reporting in C++](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries. Here we deal with classic C++ exceptions.
