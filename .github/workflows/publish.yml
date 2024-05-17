@@ -15,10 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: quarto-dev/quarto-actions/setup@v2
-    - run:
+    - run: |
         pip install nbformat
         python auto_add_date.py posts/*.ipynb
-        quarto render
+    - run: quarto render
     - uses: actions/upload-pages-artifact@v3
       with:
         path: '_site'
