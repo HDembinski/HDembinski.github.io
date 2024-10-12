@@ -13,17 +13,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - uses: quarto-dev/quarto-actions/setup@v2
-    - run: |
-        pip install nbformat
-        python auto_add_date.py posts/*.ipynb
-    - run: quarto render
-    - uses: actions/upload-pages-artifact@v3
-      with:
-        path: '_site'
+      # fetch-depth required by auto_add_date.py
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - uses: actions/setup-python@v5
+      - run: |
+          pip install nbformat
+          python auto_add_date.py posts/*.ipynb
+      - run: quarto render
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
 
   deploy:
     needs: build
@@ -40,5 +42,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/configure-pages@v4
-    - uses: actions/deploy-pages@v4
+      - uses: actions/configure-pages@v4
+      - uses: actions/deploy-pages@v4
