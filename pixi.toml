@@ -1,0 +1,18 @@
+[project]
+authors = ["Hans Dembinski <hans.dembinski@gmail.com>"]
+channels = ["conda-forge"]
+description = "Blog"
+name = "blog"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+llama-index = ">=0.12.2,<0.13"
+python = "3.11.*"
+mistune = ">=3.0.2,<4"
+wikipedia = ">=1.4.0,<2"
+ipykernel = ">=6.29.5,<7"
+ipython = ">=8.30.0,<9"
+pip = ">=24.3.1,<25"

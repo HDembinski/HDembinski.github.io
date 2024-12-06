@@ -11,3 +11,7 @@ __pycache__
 .vscode
 _site
 posts/venv
+
+# pixi environments
+.pixi
+*.egg-info
