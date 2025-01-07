@@ -10,7 +10,7 @@ __pycache__
 /.quarto/
 .vscode
 _site
-posts/venv
+posts/scraped
 
 # pixi environments
 .pixi
