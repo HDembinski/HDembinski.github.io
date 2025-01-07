@@ -11,6 +11,7 @@ __pycache__
 .vscode
 _site
 posts/scraped
+posts/scrape.py
 
 # pixi environments
 .pixi

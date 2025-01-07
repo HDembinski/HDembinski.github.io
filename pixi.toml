@@ -19,3 +19,5 @@ pip = ">=24.3.1,<25"
 
 [pypi-dependencies]
 markdownify = ">=0.14.1, <0.15"
+playwright = ">=1.49.1, <2"
+ollama = "*"
