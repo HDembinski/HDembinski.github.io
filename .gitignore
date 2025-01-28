@@ -12,6 +12,7 @@ __pycache__
 _site
 posts/scraped
 posts/scrape.py
+unpublished
 
 # pixi environments
 .pixi
