@@ -63,7 +63,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/harfbuzz-9.0.0-h2bedf89_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/hpack-4.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/httpcore-1.0.7-pyh29332c3_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/noarch/httpx-0.28.0-pyhd8ed1ab_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/httpx-0.27.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/hyperframe-6.0.1-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/icu-75.1-he0c23c2_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/idna-3.10-pyhd8ed1ab_1.conda
@@ -143,6 +143,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/networkx-3.4.2-pyh267e887_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/nltk-3.9.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/numpy-2.1.3-py311h35ffc71_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/ollama-python-0.4.7-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/openai-1.56.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/openjpeg-2.5.2-h3d672ee_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/openssl-3.4.0-h2466b09_0.conda
@@ -1110,21 +1111,22 @@ packages:
   purls: []
   size: 48959
   timestamp: 1731707562362
-- conda: https://conda.anaconda.org/conda-forge/noarch/httpx-0.28.0-pyhd8ed1ab_0.conda
-  sha256: cb7895446cd93091300accea6afbc8d9811a3c5899922ccfeeff97d9b55909dc
-  md5: 22878824a87f1af2ad48665f9d5bfcc8
+- conda: https://conda.anaconda.org/conda-forge/noarch/httpx-0.27.2-pyhd8ed1ab_0.conda
+  sha256: 1a33f160548bf447e15c0273899d27e4473f1d5b7ca1441232ec2d9d07c56d03
+  md5: 7e9ac3faeebdbd7b53b462c41891e7f7
   depends:
   - anyio
   - certifi
   - httpcore 1.*
   - idna
-  - python >=3.9
+  - python >=3.8
+  - sniffio
   license: BSD-3-Clause
   license_family: BSD
   purls:
   - pkg:pypi/httpx?source=hash-mapping
-  size: 63183
-  timestamp: 1732831049776
+  size: 65085
+  timestamp: 1724778453275
 - pypi: https://files.pythonhosted.org/packages/92/75/4bc3e242ad13f2e6c12e0b0401ab2c5e5c6f0d7da37ec69bc808e24e0ccb/humanize-4.11.0-py3-none-any.whl
   name: humanize
   version: 4.11.0
@@ -2442,6 +2444,19 @@ packages:
   - pkg:pypi/numpy?source=hash-mapping
   size: 7659216
   timestamp: 1730588918527
+- conda: https://conda.anaconda.org/conda-forge/noarch/ollama-python-0.4.7-pyhd8ed1ab_0.conda
+  sha256: 4c33de4fbb26f56737aa99621e9b791e57983959d2abfc004c67adb40184bbfb
+  md5: b6f3e982b7edcc69ec59321d39604db6
+  depends:
+  - httpx >=0.27.0,<0.28.0
+  - pydantic >=2.9.0,<3.0.0
+  - python >=3.9
+  license: MIT
+  license_family: MIT
+  purls:
+  - pkg:pypi/ollama?source=hash-mapping
+  size: 18075
+  timestamp: 1737517948208
 - conda: https://conda.anaconda.org/conda-forge/noarch/openai-1.56.2-pyhd8ed1ab_0.conda
   sha256: 3fb2e714301cf8dc664f06ebf1b40696f21e3105b9c31008b3e46b047752af67
   md5: 1f79fb9938f59969be181c67b03c5c5f
