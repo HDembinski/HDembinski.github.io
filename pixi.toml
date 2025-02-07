@@ -21,6 +21,7 @@ matplotlib = ">=3.10.0,<4"
 scipy = ">=1.15.0,<2"
 altair = ">=5.5.0,<6"
 treescope = ">=0.1.8,<0.2"
+rich = ">=13.9.4,<14"
 
 [pypi-dependencies]
 markdownify = ">=0.14.1, <0.15"
