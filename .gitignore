@@ -10,10 +10,11 @@ __pycache__
 /.quarto/
 .vscode
 _site
-posts/scraped
-posts/scrape.py
+scraped
+scrape.py
 unpublished
 
 # pixi environments
 .pixi
 *.egg-info
+uv.lock
