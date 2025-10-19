@@ -18,9 +18,13 @@ website:
       - icon: github
         text: Github
         href: https://github.com/HDembinski
+
 format:
   html:
     respect-user-color-scheme: true
 
 execute:
   freeze: auto
+
+code-block-border-left: "#31BAE9"
+highlight-style: tango

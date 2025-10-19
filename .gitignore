@@ -20,6 +20,7 @@ build
 uv.lock
 
 **/*.quarto_ipynb
+*_files
 site_libs
 posts/*.ipynb
 posts/*.md
