@@ -11,7 +11,7 @@ categories: {categories}
 """
 
 
-def get_date(fn: Path):
+def get_date(fn: Path) -> str:
     r = subp.run(
         [
             "git",
@@ -43,17 +43,22 @@ for fn in input_files:
 
     categories = tag_db[fn.name]
 
-    fn_out = output_path / fn.name
     front_matter = front_matter_template.format(
-        date=get_date(fn), categories=json.dumps(categories)
+        date=get_date(fn),
+        categories=json.dumps(categories),
     )
+
+    fn_out = output_path / fn.name
     with open(fn, encoding="utf-8") as f:
         if fn.suffix == ".ipynb":
             doc = nbformat.read(f, as_version=4)
+            # insert frontmatter
             if doc.cells and doc.cells[0].cell_type != "raw":
                 doc.cells = [nbformat.v4.new_raw_cell(front_matter)] + doc.cells
             nbformat.write(doc, fn_out)
         elif fn.suffix == ".md":
             content = f.read()
+            # insert frontmatter
+            content = front_matter + content
             with open(fn_out, "w", encoding="utf-8") as f:
-                f.write(front_matter + content)
+                f.write(content)

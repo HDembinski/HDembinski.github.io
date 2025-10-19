@@ -24,3 +24,4 @@ uv.lock
 site_libs
 posts/*.ipynb
 posts/*.md
+posts/*.html

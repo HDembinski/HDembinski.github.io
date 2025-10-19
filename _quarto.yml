@@ -2,7 +2,7 @@ project:
   type: website
 
   pre-render:
-    - generate_metadata.py
+    - preprocess.py
 
 website:
   title: Hans Dembinski's blog
@@ -21,6 +21,8 @@ website:
 
 format:
   html:
+    theme: cosmo
+    css: styles.css
     respect-user-color-scheme: true
 
 execute:
