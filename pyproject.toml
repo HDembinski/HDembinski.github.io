@@ -10,6 +10,7 @@ dependencies = [
     "ipykernel>=7.0.1",
     "ipython>=9.6.0",
     "jaxlib>=0.8.0",
+    "joblib>=1.5.2",
     "markdownify>=1.2.0",
     "matplotlib>=3.10.7",
     "mistune>=3.1.4",

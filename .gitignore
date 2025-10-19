@@ -11,7 +11,6 @@ __pycache__
 .vscode
 _site
 scraped
-scrape.py
 unpublished
 
 # pixi environments
