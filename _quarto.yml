@@ -1,6 +1,5 @@
 project:
   type: website
-  output_dir: _output
 
   pre-render:
     - auto_add_date.py
