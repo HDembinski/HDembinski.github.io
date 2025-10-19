@@ -23,3 +23,7 @@ dependencies = [
     "treescope>=0.1.10",
     "wikipedia>=1.4.0",
 ]
+
+[tool.setuptools]
+# disable automatic discovery entirely
+packages = []
