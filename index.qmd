@@ -6,15 +6,6 @@ listing:
   categories: cloud
   sort-ui: true
   filter-ui: true
-
-# freeze computational output
-# (see https://quarto.org/docs/projects/code-execution.html#freeze)
-freeze: true
-
-# Enable banner style title blocks
+page-layout: full
 title-block-banner: true
-
-comments:
-  utterances:
-    repo: HDembinski/HDembinski.github.io
 ---
