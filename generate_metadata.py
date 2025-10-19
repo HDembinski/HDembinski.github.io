@@ -1,9 +1,12 @@
 import nbformat
 import subprocess as subp
 from pathlib import Path
+import json
+import datetime
 
 front_matter_template = """---
 date: {date}
+categories: {categories}
 ---
 """
 
@@ -22,7 +25,11 @@ def get_date(fn: Path):
         stdout=subp.PIPE,
     )
     dates = [x for x in r.stdout.decode().split("\n") if x]
-    return dates[-1]
+    return dates[-1] if dates else datetime.date.today().strftime("%Y-%m-%d")
+
+
+with open("tag_db.json", encoding="utf-8") as f:
+    tag_db = json.load(f)
 
 
 output_path = Path("posts")
@@ -34,8 +41,12 @@ for fn in input_files:
     if fn.suffix not in (".ipynb", ".md"):
         continue
 
+    categories = tag_db[fn.name]
+
     fn_out = output_path / fn.name
-    front_matter = front_matter_template.format(date=get_date(fn))
+    front_matter = front_matter_template.format(
+        date=get_date(fn), categories=json.dumps(categories)
+    )
     with open(fn, encoding="utf-8") as f:
         if fn.suffix == ".ipynb":
             doc = nbformat.read(f, as_version=4)
