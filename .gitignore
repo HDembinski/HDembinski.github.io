@@ -17,3 +17,6 @@ unpublished
 .pixi
 *.egg-info
 uv.lock
+
+**/*.quarto_ipynb
+site_libs

@@ -1,5 +1,7 @@
 project:
   type: website
+  pre-render:
+    - auto_add_date.py
 
 website:
   title: Hans Dembinski's blog
@@ -17,8 +19,7 @@ website:
         href: https://github.com/HDembinski
 format:
   html:
-    theme: cosmo
-    css: styles.css
+    respect-user-color-scheme: true
 
 execute:
   freeze: auto

@@ -1,18 +1,11 @@
 import sys
 import nbformat
 import subprocess as subp
-import argparse
+from pathlib import Path
+import os
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--dry-run", action="store_true")
-parser.add_argument("file", nargs="+")
 
-args = parser.parse_args()
-
-for fn in args.file:
-    with open(fn) as f:
-        nb = nbformat.read(f, as_version=4)
-
+def get_date(fn: Path):
     r = subp.run(
         [
             "git",
@@ -21,23 +14,31 @@ for fn in args.file:
             "--follow",
             "--format=%ad",
             "--date=short",
-            fn,
+            str(fn),
         ],
         stdout=subp.PIPE,
     )
     dates = [x for x in r.stdout.decode().split("\n") if x]
-    date = dates[-1]
+    return dates[-1]
 
-    if nb.cells and nb.cells[0].cell_type != "raw":
-        front_matter = f"""
----
+
+output_path = Path("posts_preprocessed")
+
+input_files = [Path(fn) for fn in Path("posts").rglob("*.*")]
+
+for fn in input_files:
+    if fn.suffix not in (".ipynb", ".md"):
+        continue
+
+    date = get_date(fn)
+
+    front_matter = f"""---
 date: {date}
 ---
 """
-        print(f"adding frontmatter to {fn}\n{front_matter}")
 
-        nb.cells = [nbformat.v4.new_raw_cell(front_matter)] + nb.cells
-
-    if not args.dry_run:
-        with open(fn, "w") as f:
-            nbformat.write(nb, f)
+    with open(fn, encoding="utf-8") as f:
+        doc = nbformat.read(f, as_version=4)
+        if doc.cells and doc.cells[0].cell_type != "raw":
+            doc.cells = [nbformat.v4.new_raw_cell(front_matter)] + doc.cells
+        nbformat.write(doc, output_path / fn.name)
