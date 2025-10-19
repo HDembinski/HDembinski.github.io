@@ -2,6 +2,11 @@ import nbformat
 import subprocess as subp
 from pathlib import Path
 
+front_matter_template = """---
+date: {date}
+---
+"""
+
 
 def get_date(fn: Path):
     r = subp.run(
@@ -30,11 +35,7 @@ for fn in input_files:
         continue
 
     fn_out = output_path / fn.name
-    date = get_date(fn)
-    front_matter = f"""---
-date: {date}
----
-"""
+    front_matter = front_matter_template.format(date=get_date(fn))
     with open(fn, encoding="utf-8") as f:
         if fn.suffix == ".ipynb":
             doc = nbformat.read(f, as_version=4)

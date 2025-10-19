@@ -2,7 +2,7 @@ project:
   type: website
 
   pre-render:
-    - auto_add_date.py
+    - generate_metadata.py
 
 website:
   title: Hans Dembinski's blog
