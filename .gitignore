@@ -12,8 +12,13 @@ __pycache__
 _site
 scraped
 unpublished
+build
 
 # pixi environments
 .pixi
 *.egg-info
 uv.lock
+
+**/*.quarto_ipynb
+site_libs
+posts

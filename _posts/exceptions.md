@@ -1,7 +1,3 @@
----
-date : 2020-04-05
----
-
 # C++ exceptions in high-performance code
 
 Here is a collection of advice on using exceptions in high-performance libraries. There has been a lot of discussion in the Boost community about exceptions lately, since [some people want to](http://open-std.org/JTC1/SC22/WG21/docs/papers/2018/p0709r0.pdf) [improve error reporting in C++](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1095r0.pdf), which led to the development of [Boost.Outcome](https://www.boost.org/doc/libs/1_72_0/libs/outcome/doc/html/index.html) and similar libraries. Here we deal with classic C++ exceptions.
@@ -59,6 +55,7 @@ Also in theory, it should not be necessary to mark every non-throwing function o
 It may be tempting use an `assert` instead of an exception, because the optimiser is not troubled by an `assert`, but don't do that. An `assert` is usually only checked when the code is compiled in debug mode[<sup>2</sup>](#2), while exceptions work also in production code. Therefore, an `assert` cannot be used in place of an exception, in particular in code that checks or validates user input.
 
 Rule-of-thumb for using either `assert` or throwing an exception:
+
 - In private interfaces and private implementation code, where you have full control over the input, use `assert` to check the consistency of your program logic
 - In user-facing interfaces, use exceptions
 
@@ -74,7 +71,7 @@ If the implementation allows it at all, destructors, move constructors, and move
 
 [Throwing destructors are a really bad idea](https://isocpp.org/wiki/faq/exceptions#dtors-shouldnt-throw), because destructors are called during the stack-unwinding when another exception was thrown. If the exception is allowed to leave the destructor in this situation, the program will terminate immediately[<sup>3</sup>](#3).
 
-Containers like `std::vector` need their elements to have non-throwing move constructors and move-assignment to make efficient use of them. Containers typically want to guarantee that they are in a valid state at all times. For example, `std::vector::push_back` grants the *strong exception guarantee*: if an exception is thrown while the method runs, the vector is guaranteed to remain in its original state. This guarantee cannot be given if moves can throw. The vector first increases its size and default constructs a value in the new position. For moves to be efficient, the original value in the container has to be destroyed before the new value is moved into its memory block. If the move operation throws, the original value cannot be restored. Since correctness is more important than performance, `std::vector::push_back` [tries to copy values instead of moving them when moves can throw](https://en.cppreference.com/w/cpp/container/vector/push_back).
+Containers like `std::vector` need their elements to have non-throwing move constructors and move-assignment to make efficient use of them. Containers typically want to guarantee that they are in a valid state at all times. For example, `std::vector::push_back` grants the _strong exception guarantee_: if an exception is thrown while the method runs, the vector is guaranteed to remain in its original state. This guarantee cannot be given if moves can throw. The vector first increases its size and default constructs a value in the new position. For moves to be efficient, the original value in the container has to be destroyed before the new value is moved into its memory block. If the move operation throws, the original value cannot be restored. Since correctness is more important than performance, `std::vector::push_back` [tries to copy values instead of moving them when moves can throw](https://en.cppreference.com/w/cpp/container/vector/push_back).
 
 The existance of throwing moves caused considerable head ache for developers of type-safe union types, like [`std::variant`](https://en.cppreference.com/w/cpp/utility/variant) and [`boost::variant2`](https://www.boost.org/doc/libs/1_72_0/libs/variant2/doc/html/variant2.html). While `std::variant` [gives up on the strong exception guarantee](https://en.cppreference.com/w/cpp/utility/variant/valueless_by_exception) in this case, `boost::variant2` [adheres to it](https://www.boost.org/doc/libs/1_72_0/libs/variant2/doc/html/variant2.html#design_strong_exception_safety) at the cost of doubling the size of the variant if any type in the variant set has throwing moves.
 
@@ -85,6 +82,7 @@ The existance of throwing moves caused considerable head ache for developers of 
 Good software is programmed in layers of abstraction. Exceptions often occur in the lowest implementation layer. Sometimes the lowest layer cannot fully report the context of the exception, because the information is not available in that layer.
 
 Here is an example from the documentation of Boost.Exception:
+
 ```
 void
 read_file( FILE * f )
@@ -96,6 +94,7 @@ read_file( FILE * f )
     ....
     }
 ```
+
 If the file cannot be read, `read_file` throws an exception. Users probably want to know which file could not be read, but this layer does not know the file name. It only got a `FILE` pointer.
 
 Changing `read_file` so that it accepts the filename is breaking modularisation. The author of `read_file` cannot and should not need to know in which context this function is used.
@@ -113,6 +112,7 @@ One can help the optimiser in these situations by wrapping the `throw` in a smal
 If your code throws exceptions at all, it will not compile when exceptions are turned off in the compiler (for example, with the flag `-fno-exceptions` in gcc and clang). As a library developer, you should be interested in supporting compilation without exceptions, [since this makes your library useful for more people](https://stackoverflow.com/questions/691168/how-much-footprint-does-c-exception-handling-add). At the very least, it helps you to see whether you currently loose performance by using exceptions and whether something has to be done about it (often implementations can be manually optimised to keep the cost small).
 
 Again, [Boost.Exception](https://www.boost.org/doc/libs/1_72_0/libs/exception/doc/BOOST_THROW_EXCEPTION.html) has a solution ready: if you consistently use the macro `BOOST_THROW_EXCEPTION` or the function `boost::throw_exception` instead of a naked `throw` (which also has the performance benefits previously mentioned), your code will compile even when exceptions are disabled. The library will detect this and call a user-defined implementation of `void throw_exception( std::exception const& e , boost::source_location const& l)` instead, which must terminate the program but can run error logging or clean up code before. If the code also catches and rethrows exceptions, the keywords `try` and `catch` need to be conditionally hidden, for example, like this
+
 ```
 #ifdef BOOST_NO_EXCEPTIONS
 potentially_throwing(....);
@@ -124,9 +124,11 @@ try {
 }
 #endif
 ```
+
 The [gcc implementation of the C++ stdlib](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_exceptions.html) uses a similar approach when you turn off exceptions.
 
 Boost.Histogram uses Boost.Exception everywhere. This allows me to benchmark it with and without exceptions enabled (and thus I know about the 10-15 % difference in performance). The simple implementation of `void throw_exception( std::exception const& e, boost::source_location const& l)` in the tests and benchmarks reports where the exception has occured and then aborts the program.
+
 ```
 void throw_exception(std::exception const& e, boost::source_location const& l) {
   std::cerr << l.file_name() << ":" << l.line() << ":" << l.column() << ": exception in '"
