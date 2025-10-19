@@ -23,7 +23,6 @@ jobs:
           python-version: 3.12
       - run: |
           pip install nbformat
-          python auto_add_date.py posts/*.ipynb
       - run: quarto render
       - uses: actions/upload-pages-artifact@v3
         with:
