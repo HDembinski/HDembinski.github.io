@@ -18,6 +18,7 @@ website:
       - icon: github
         text: Github
         href: https://github.com/HDembinski
+  sidebar:
 
 format:
   html:
