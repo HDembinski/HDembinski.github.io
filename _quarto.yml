@@ -19,6 +19,7 @@ website:
         text: Github
         href: https://github.com/HDembinski
   sidebar:
+    contents: auto
 
 format:
   html:
