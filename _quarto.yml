@@ -10,6 +10,7 @@ website:
     left:
       - lectures.qmd
       - talks.qmd
+      - paper.qmd
     right:
       - about.qmd
       - icon: linkedin
