@@ -1,8 +1,7 @@
 {
   "all_KK_decays.ipynb": [
     "physics",
-    "programming",
-    "visualization"
+    "programming"
   ],
   "asymmetric errors.ipynb": [
     "physics",
@@ -15,7 +14,6 @@
     "programming"
   ],
   "chance_of_deviations_in_random_splits.ipynb": [
-    "data analysis",
     "programming",
     "simulation",
     "statistics"
@@ -23,34 +21,27 @@
   "comparison_chisquare_test_statistics.ipynb": [
     "simulation",
     "statistics",
-    "symbolic computation",
-    "visualization"
+    "symbolic computation"
   ],
   "Correlation.ipynb": [
-    "data analysis",
-    "high performance computing",
     "physics",
-    "programming",
     "simulation",
-    "visualization"
+    "statistics"
   ],
   "cows.ipynb": [
     "programming",
     "sWeights",
-    "statistics",
-    "visualization"
+    "statistics"
   ],
   "cross_section_extrapolation_error.ipynb": [
-    "data analysis",
     "physics",
     "statistics",
-    "uncertainty analysis",
-    "visualization"
+    "uncertainty analysis"
   ],
   "cross_section_pip_vs_pp.ipynb": [
     "data analysis",
     "physics",
-    "visualization"
+    "statistics"
   ],
   "duffing.ipynb": [
     "physics",
@@ -74,26 +65,23 @@
     "programming"
   ],
   "factorization_test.ipynb": [
-    "data analysis",
-    "programming",
     "sWeights",
-    "statistics",
-    "visualization"
+    "simulation",
+    "statistics"
   ],
   "fast_deep_set.ipynb": [
     "high performance computing",
     "machine learning",
     "neural networks",
     "physics",
-    "programming"
+    "programming",
+    "simulation",
+    "statistics"
   ],
   "Fit weighted histograms with SPD method.ipynb": [
-    "data analysis",
     "physics",
-    "programming",
-    "science",
-    "statistics",
-    "visualization"
+    "simulation",
+    "statistics"
   ],
   "From fixed target to sqrt_s_nn and back.ipynb": [
     "physics",
@@ -101,25 +89,31 @@
   ],
   "gof_test_statistic.ipynb": [
     "data analysis",
-    "science",
+    "physics",
     "simulation",
     "statistics"
   ],
   "HESSE_vs_MINOS_TwoGauss.ipynb": [
-    "data analysis",
+    "programming",
     "simulation",
     "statistics",
-    "uncertainty analysis",
-    "visualization"
+    "uncertainty analysis"
   ],
   "hyperon_feed_down.ipynb": [
     "data analysis",
     "physics",
+    "simulation",
+    "statistics"
+  ],
+  "iminuit_update.ipynb": [
+    "high performance computing",
+    "physics",
     "programming",
-    "visualization"
+    "statistics"
   ],
   "Interactive plotting in Jupyter with matplotlib.ipynb": [
     "programming",
+    "statistics",
     "visualization"
   ],
   "invariant mass combinatorial background.ipynb": [
@@ -130,6 +124,8 @@
   ],
   "Leave-one-out cross-validation.ipynb": [
     "data analysis",
+    "programming",
+    "simulation",
     "statistics"
   ],
   "llama_index_rag.ipynb": [
@@ -149,29 +145,25 @@
   ],
   "look_elsewhere_effect.ipynb": [
     "bootstrap",
-    "data analysis",
     "physics",
-    "programming",
     "simulation",
     "statistics",
-    "uncertainty analysis",
-    "visualization"
+    "uncertainty analysis"
   ],
   "MCMC.ipynb": [
     "programming",
     "simulation",
-    "statistics",
-    "visualization"
-  ],
-  "naive_calibration_bias.ipynb": [
-    "data analysis",
-    "physics",
-    "programming",
-    "simulation",
     "statistics"
   ],
+  "naive_calibration_bias.ipynb": [
+    "physics",
+    "simulation",
+    "statistics",
+    "uncertainty analysis"
+  ],
   "New iminuit displays.ipynb": [
-    "programming"
+    "programming",
+    "visualization"
   ],
   "Numerically stable calculation of invariant mass.ipynb": [
     "high performance computing",
@@ -179,10 +171,9 @@
     "programming"
   ],
   "p-value conversion.ipynb": [
-    "data analysis",
-    "science",
-    "statistics",
-    "visualization"
+    "physics",
+    "simulation",
+    "statistics"
   ],
   "parse_latex.ipynb": [
     "parsing",
@@ -206,14 +197,14 @@
     "visualization"
   ],
   "ratio bias.ipynb": [
-    "data analysis",
-    "statistics",
-    "visualization"
+    "programming",
+    "statistics"
   ],
   "regression.ipynb": [
     "machine learning",
     "neural networks",
-    "programming"
+    "programming",
+    "statistics"
   ],
   "render_latex_to_svg.ipynb": [
     "programming",
@@ -222,13 +213,11 @@
   "resample and numba.ipynb": [
     "high performance computing",
     "programming",
-    "statistics",
-    "visualization"
+    "statistics"
   ],
   "RooFit.ipynb": [
     "physics",
     "programming",
-    "simulation",
     "statistics"
   ],
   "Simple parallelization in Jupyter Notebooks.ipynb": [
@@ -236,7 +225,6 @@
     "programming"
   ],
   "Sleep mode power consumption.ipynb": [
-    "data analysis",
     "environment"
   ],
   "SPD with negative weights.ipynb": [
@@ -252,41 +240,36 @@
   ],
   "template_with_distortion.ipynb": [
     "bootstrap",
-    "programming",
+    "physics",
     "simulation",
     "statistics",
-    "uncertainty analysis",
-    "visualization"
+    "uncertainty analysis"
   ],
   "tracking_efficiency.ipynb": [
+    "data analysis",
     "physics",
-    "programming",
     "statistics",
     "uncertainty analysis"
   ],
   "UnbiasedEML.ipynb": [
-    "science",
-    "simulation",
+    "physics",
     "statistics",
     "symbolic computation"
   ],
   "Uncertainty of efficiency computed from fitted yields.ipynb": [
-    "data analysis",
+    "physics",
+    "programming",
     "simulation",
     "statistics",
     "symbolic computation",
-    "uncertainty analysis",
-    "visualization"
+    "uncertainty analysis"
   ],
   "visual_cross_section.ipynb": [
     "physics",
-    "programming",
     "simulation"
   ],
   "Wilson Score Interval with Weighted Histograms.ipynb": [
-    "bootstrap",
-    "data analysis",
-    "simulation",
+    "programming",
     "statistics"
   ]
 }
