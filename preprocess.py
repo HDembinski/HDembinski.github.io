@@ -41,7 +41,7 @@ for fn in input_files:
     if fn.suffix not in (".ipynb", ".md"):
         continue
 
-    categories = tag_db[fn.name]
+    categories = tag_db.get(fn.name, [])
 
     front_matter = front_matter_template.format(
         date=get_date(fn),
