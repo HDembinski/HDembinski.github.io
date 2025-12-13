@@ -11,6 +11,7 @@ website:
       - lectures.qmd
       - talks.qmd
       - paper.qmd
+      - art.qmd
     right:
       - about.qmd
       - icon: linkedin

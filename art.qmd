@@ -1,0 +1,29 @@
+---
+title: "Art"
+page-layout: full
+listing:
+  id: listing-gallery
+  template: gallery.ejs
+  contents:
+    - art/*.jpg
+    - art/*.png
+  sort-ui: false
+  filter-ui: false
+  categories: false
+---
+
+I generate art with AI, using several tools and services:
+
+- Online service
+  - Leonardo AI
+- ComfyUI
+  - Z-Image Turbo
+  - Qwen Image Edit 2509
+  - Seedvr2
+  - Flux.1 Schnell
+- Image editors
+  - Gimp
+  - Krita
+
+::: {#listing-gallery}
+:::
