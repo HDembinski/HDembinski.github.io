@@ -1,0 +1,47 @@
+name: publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth required by auto_add_date.py
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: quarto-dev/quarto-actions/setup@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - run: |
+          pip install nbformat
+      - run: quarto render
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+
+  deploy:
+    needs: build
+    # Set permissions to allow deployment to GitHub Pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/configure-pages@v4
+      - uses: actions/deploy-pages@v4

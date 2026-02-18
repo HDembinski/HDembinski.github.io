@@ -1,0 +1,55 @@
+# To use:
+#
+#     pre-commit run -a
+#
+# Or:
+#
+#     pre-commit install  # (runs every time you commit in git)
+#
+# To update this file:
+#
+#     pre-commit autoupdate
+#
+# See https://github.com/pre-commit/pre-commit
+
+repos:
+  # Standard hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-yaml
+        args: ["--allow-multiple-documents"]
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: sort-simple-yaml
+      - id: file-contents-sorter
+      - id: trailing-whitespace
+        exclude: .*\.svg
+
+  # Ruff linter, replacement for flake8, pydocstyle, isort
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.2.0"
+    hooks:
+      - id: ruff
+        args: [--fix, --show-fixes]
+
+  # Check that tag_db has an entry for newly added blog posts
+  - repo: local
+    hooks:
+      - id: add-tag
+        name: add tags for new posts
+        entry: python add_tags.py
+        language: python
+        pass_filenames: false
+        files: ^.*\.ipynb$
+        additional_dependencies:
+          - pydantic
+          - pydantic-ai-slim[openai]
+          - nbformat
+          - rich

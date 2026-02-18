@@ -1,0 +1,33 @@
+project:
+  type: website
+
+  pre-render:
+    - preprocess.py
+
+website:
+  title: Hans Dembinski's blog
+  navbar:
+    left:
+      - lectures.qmd
+      - talks.qmd
+      - paper.qmd
+    right:
+      - about.qmd
+      - icon: linkedin
+        text: LinkedIn
+        href: https://www.linkedin.com/in/hans-dembinski/
+      - icon: github
+        text: Github
+        href: https://github.com/HDembinski
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    respect-user-color-scheme: true
+
+execute:
+  freeze: auto
+
+code-block-border-left: "#31BAE9"
+highlight-style: tango

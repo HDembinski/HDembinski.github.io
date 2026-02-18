@@ -1,0 +1,18 @@
+---
+title: "Paper"
+page-layout: full
+---
+
+Here is a curated list of paper that I wrote as primary author.
+
+#### [Muons in Air Showers at the Pierre Auger Observatory: Mean Number in Highly Inclined Events (2014)](https://inspirehep.net/literature/1310077)
+
+My most important scientific contribution. Currently (Nov, 2025) it has 400 citations and is the 14th most cited paper of the Pierre Auger Observatory. The paper is still going strong, collecting about 30 citations per year, which shows the lasting effect it had on the field.
+
+#### [A likelihood method to cross-calibrate air-shower detectors (2016)](https://inspirehep.net/literature/1357170)
+
+Here, I developed a statistical method to cross-calibrate two detectors from first principles, and a simple approximation that can be computed rapidly without solving multi-dimensional integrals numerically. What looks like a simple line fit gets surprisingly complex when you address the bias that is introduced through data quality cuts. These biases have been treated with workarounds for years, before we introduced the correct solution here. It's not my most cited paper, but I am very proud of this result.
+
+#### [Custom Orthogonal Weight functions (COWs) for event classification (2021)](https://inspirehep.net/literature/1986730)
+
+You know that the [penguin diagrams](https://en.wikipedia.org/wiki/Penguin_diagram) were introduced to physics, because John Ellis made a bar room bet with Melissa Franklin? Well, we should have made a bar bet for cows. Here they are.

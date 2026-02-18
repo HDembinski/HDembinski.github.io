@@ -1,0 +1,18 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: trestles
+  image-width: 12em
+---
+
+I have curious mind and a broad range of interests, professionally they circle around data analysis, statistics, software development, machine learning, and artificial intelligence. In this blog, I write about these topics.
+
+I am a member of the [Boost C++ Project](https://www.boost.org), to which I contributed the [Histogram library](https://www.boost.org/doc/libs/1_85_0/libs/histogram/doc/html/index.html), and a C++ guru, but recently I only program in Python, since it is so much more enjoyable. With [Numba](https://numba.pydata.org/), one can write numerical code in Python with C++ equivalent performance in a fraction of the time.
+
+I have a PhD and habilitation in astroparticle physics. If you want to know more about my professional career, click on the LinkedIn button above.
+
+I maintain a range of useful data science libraries, click on the Github button above if you want to know more.
+
+
+Source code published on this blog is released under the MIT license, see LICENSE in the [code repository](https://github.com/HDembinski/HDembinski.github.io) for this blog.

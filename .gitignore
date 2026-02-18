@@ -1,0 +1,27 @@
+.DS_Store
+.ipynb_checkpoints
+.pytest_cache
+.vscode
+__pycache__
+*.pkl.gz
+.venv
+.benchmarks
+.ruff_cache
+/.quarto/
+.vscode
+_site
+scraped
+unpublished
+build
+
+# pixi environments
+.pixi
+*.egg-info
+uv.lock
+
+**/*.quarto_ipynb
+*_files
+site_libs
+posts/*.ipynb
+posts/*.md
+posts/*.html
