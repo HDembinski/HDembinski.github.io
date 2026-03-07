@@ -1,0 +1,153 @@
+---
+title: "Developer Guide"
+subtitle: "Coding preferences for AI (and human) collaborators"
+---
+
+## General
+
+- All rules have exceptions. Use judgment when applying a rule.
+  - If a rule has a common exception, it should be listed here.
+  - If a rule is missing, it should be listed here.
+- Use `ruff` to format and lint code.
+- Code [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), but avoid hasty abstractions (AHA). Best code is no code.
+- [Follow PEP 8 Naming conventions](https://peps.python.org/pep-0008/#naming-conventions)
+- [Use the numpydoc docstring format](https://numpydoc.readthedocs.io/en/latest/format.html)
+- [Design along PEP 20](https://peps.python.org/pep-0020/)
+- Use `try...except` sparingly.
+  - Do not catch exceptions just to print some message and exit, that's superfluous.
+  - Use exceptions only for unexpected events. A function which is known to sometimes fail should return `None` instead of raising.
+- Use `assert` to explicitly indicate value assumptions (pre-conditions) and to help the type checker.
+- Follow the pattern `is_foo` and `has_foo` for functions/methods/properties which return True or False.
+- Use `TODO` and `FIXME` comments to highlight open issues that need to be improved later.
+
+## Documentation
+
+- Public functions and classes should be documented. For simple functions, a one-liner is acceptable.
+- Don't comment what is obvious from the code, comments should add insight. Example:
+
+  ```py
+  def bad(arg: str) -> float:
+      # convert arg with non_throwing_float to value
+      value = non_throwing_float(arg)
+      # add one to value
+      value += 1.0
+      return value
+
+  def good(arg: str) -> float:
+      # We use non_throwing_float instead of float here,
+      # because we want to return NaN if arg is a non-numerical string,
+      # which is filtered out later, instead of throwing an exception.
+      value = non_throwing_float(arg)
+      value += 1.0
+      return value
+  ```
+
+## Coding style
+
+- Functional
+  - Use Pydantic BaseModels for state. Ideally, state should be immutable.
+  - Functions for state transformations.
+  - Prefer free functions over methods.
+  - Derived state should be provided dynamically via properties. If it is expensive to compute, use `cached_property`.
+- Strongly typed
+  - Prefer Pydantic BaseModels over dicts.
+  - Simple dicts like `dict[str, str]` are allowed.
+  - Dicts are fine, if they are only used internally in a function implementation.
+  - Use modern type annotations, e.g. `dict[str, list[str] | None]` instead of `Dict[str, Optional[List[str]]]`
+  - Use narrow type annotations, e.g. `dict[str, int]` instead of `dict`
+  - **Exception:** See section 'Unit tests'
+- Well structured
+  - Group stuff that belongs together into modules.
+  - If a module becomes too long, consider splitting it up.
+  - Group related modules into packages.
+- Keep it simple
+  - Use the empty state of collections (`dict`, `list`, `str`, ...) instead of `None` in function signatures, e.g. a function which returns `list[str] | None` should usually just return `list[str]` unless `None` is needed to distinguish an empty list from an error. Likewise, you can usually return empty strings instead of using `str | None`.
+  - Use the `__iter__` of a collection, e.g. `for key in my_dict` instead of `for key in my_dict.keys()`.
+  - Use list comprehensions when they are easier to read and avoid defining temporary variables.
+  - Break long functions into smaller, well-defined, unit-testable and reusable functions. But...
+  - Avoid tiny functions. If the function body is short (1-2 lines) and the function only used in one place, inline.
+    - Having many tiny functions reduces readability: they take up screen space due to docstrings, type annotations, etc.
+    - Tiny functions are justified if they make the code DRYer.
+  - Avoid defining superfluous local variables within reason, as illustrated by these examples:
+
+    ```py
+    def bad(arg: str) -> dict[str, str]:
+        args = {"arg": arg, "some_other_arg": "yolo"}
+        value = some_compute(args)
+        result = {"foo": 42, "bar": value}
+        return result
+
+    def good(arg: str) -> dict[str, str]:
+        value = some_compute({"arg": arg, "some_other_arg": "yolo"})
+        return {"foo": 42, "bar": value}
+
+    def probably_overdoing_it(arg: str) -> dict[str, str]:
+        return {
+            "foo": 42,
+            "bar": some_compute(
+                {
+                    "arg": arg,
+                    "some_other_arg": "yolo",
+                }
+            ),
+        }
+    ```
+
+- Library use
+  - Use `rich` when it's available.
+  - Use `logging` instead of simple `print` statements.
+  - Use `pathlib.Path` instead of `os.path`.
+  - Prefer attribute docstrings in pydantic BaseModels instead of `Field(description="foo")`
+
+    ```py
+    from pydantic import BaseModel, ConfigDict, Field
+
+    class Bad(BaseModel):
+        first_name: str = Field(description="First name of the person.")
+        last_name: str = Field(description="Last name of the person.")
+        age: int = Field(description="Age of the person in years.")
+
+    class BaseModelWithAttributeDocstrings(BaseModel):
+        model_config = ConfigDict(
+            use_attribute_docstrings=True
+        )
+
+    # By inheriting from the customized base class, you
+    # don't have to set model_config repeatedly.
+    class Good(BaseModelWithAttributeDocstrings):
+        first_name: str
+        "First name of the person."
+        last_name: str
+        "Last name of the person."
+        age: int
+        "Age of the person in years."
+    ```
+
+## Unit tests
+
+- Use `pytest`. Tests are simple functions of the form `test_foo()`. Group related tests into a test file.
+- Unit tests don't need to be elaborately typed, e.g. `def test_something() -> None:` provides no value over `def test_something():`
+- Use `pytest.fixture` for setup/teardown.
+- Use `conftest.py` to share fixtures, as well as utility functions and constants that are only revelant for testing, e.g. helpers to create test objects. This is bit of an abuse of conftest, but better than the (also ugly) alternatives.
+  - Fixtures defined in `conftest.py` are automatically available. Utility functions and constants you need to import manually. Before adding an utility, check what already exists in `conftest.py`.
+- Use `pytest.mark.parametrize` to test transformations and factory functions on multiple examples.
+  - Use the modern way of declaring parameters `("arg1", "arg2")` instead of `"arg1, arg2"`. Example:
+
+    ```py
+    import pytest
+    from some_module import foo
+
+    @pytest.mark.parametrize(
+        ("testcase", "expected"),
+        [
+            ...
+        ]
+    )
+    def test_foo(testcase, expected):
+        got = foo(testcase)
+        assert got == expected
+    ```
+
+- Our primary goal is to have 100% test coverage with the least amount of effort/code.
+  - Ideally, unit tests should be low-level, isolated, and independent, but we are lax on these requirements.
+  - If a single high-level test covers the tested unit completely, no further tests are required.

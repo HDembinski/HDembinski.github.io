@@ -39,17 +39,18 @@ repos:
       - id: ruff
         args: [--fix, --show-fixes]
 
-  # Check that tag_db has an entry for newly added blog posts
+  # Auto-generate frontmatter (categories + date) for new blog posts
   - repo: local
     hooks:
-      - id: add-tag
-        name: add tags for new posts
-        entry: python add_tags.py
+      - id: add-frontmatter
+        name: add frontmatter for new posts
+        entry: python add_frontmatter.py
         language: python
         pass_filenames: false
-        files: ^.*\.ipynb$
+        files: ^posts/.*\.(ipynb|md)$
         additional_dependencies:
           - pydantic
           - pydantic-ai-slim[openai]
           - nbformat
+          - pyyaml
           - rich

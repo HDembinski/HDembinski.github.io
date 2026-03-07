@@ -1,9 +1,6 @@
 project:
   type: website
 
-  pre-render:
-    - preprocess.py
-
 website:
   title: Hans Dembinski's blog
   navbar:
