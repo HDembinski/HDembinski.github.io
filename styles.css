@@ -1,0 +1,39 @@
+/* Chat bubbles (bonus section) */
+#chat-user {
+  display: block;
+  width: fit-content;
+  max-width: 80%;
+  margin: 0 0 1rem auto;
+  padding: 0.75rem 1rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+#chat-ai {
+  padding: 0.75rem 1rem;
+  padding-left: 3.5rem;
+  background: #f1f5f9;
+  color: #1e293b;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  font-size: 0.95em;
+  line-height: 1.6;
+  position: relative;
+}
+#chat-ai::before {
+  content: "Qwen";
+  position: absolute;
+  left: 0.6rem;
+  top: 0.75rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
